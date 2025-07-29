@@ -23,9 +23,16 @@ export function Header() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link href="/">
-                <h1 className="text-2xl font-bold text-primary cursor-pointer">
-                  MultiGroup
-                </h1>
+                <div className="flex items-center space-x-3 cursor-pointer">
+                  <img 
+                    src="/attached_assets/IMG_1406_1753812393970.jpeg" 
+                    alt="Kas Kisalu Logo" 
+                    className="h-10 w-10 rounded-full object-cover"
+                  />
+                  <h1 className="text-2xl font-bold text-primary">
+                    Kas Kisalu
+                  </h1>
+                </div>
               </Link>
             </div>
 

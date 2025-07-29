@@ -11,7 +11,7 @@ export default function About() {
         <section className="py-20 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">À Propos de MultiGroup</h1>
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">À Propos de Kas Kisalu</h1>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                 Une entreprise familiale devenue leader multi-sectoriel grâce à l'expertise et l'innovation
               </p>
@@ -21,7 +21,7 @@ export default function About() {
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Notre Histoire</h2>
                 <p className="text-gray-600 mb-4">
-                  Fondée en 1995, MultiGroup a débuté comme une petite entreprise de construction avant de diversifier ses activités vers l'agriculture, l'élevage et le transport. Cette expansion naturelle répond aux besoins complémentaires de nos clients et de notre région.
+                  Fondée en 1995, Kas Kisalu a débuté comme une petite entreprise de construction avant de diversifier ses activités vers l'agriculture, l'élevage et le transport. Cette expansion naturelle répond aux besoins complémentaires de nos clients et de notre région.
                 </p>
                 <p className="text-gray-600 mb-6">
                   Aujourd'hui, nous sommes fiers d'être un acteur majeur dans ces quatre secteurs, alliant tradition et modernité pour offrir des services de qualité supérieure.

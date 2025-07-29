@@ -1,8 +1,8 @@
-# MultiGroup - Multi-Sector Business Website
+# Kas Kisalu - Multi-Sector Business Website
 
 ## Overview
 
-This is a full-stack web application for MultiGroup, a multi-sector business operating in construction, agriculture, livestock (élevage), and transportation. The application is built with React frontend, Express.js backend, and uses modern tooling including TypeScript, Tailwind CSS, and shadcn/ui components.
+This is a full-stack web application for Kas Kisalu, a multi-sector business operating in construction, agriculture, livestock (élevage), and transportation. The application is built with React frontend, Express.js backend, and uses modern tooling including TypeScript, Tailwind CSS, and shadcn/ui components. The company is based in Kinshasa, RDC.
 
 ## User Preferences
 

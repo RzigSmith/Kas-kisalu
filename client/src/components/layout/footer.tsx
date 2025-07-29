@@ -7,7 +7,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
-            <h3 className="text-2xl font-bold mb-4">MultiGroup</h3>
+            <h3 className="text-2xl font-bold mb-4">Kas Kisalu</h3>
             <p className="text-gray-400 mb-4">
               Votre partenaire multi-sectoriel pour tous vos projets de construction, agriculture, élevage et transport.
             </p>
@@ -63,16 +63,16 @@ export function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-4">Contact</h4>
             <ul className="space-y-2 text-gray-400">
-              <li>123 Avenue des Champs</li>
-              <li>75000 Paris, France</li>
-              <li>+33 1 23 45 67 89</li>
-              <li>contact@multigroup.fr</li>
+              <li>Avenue de la Paix</li>
+              <li>Kinshasa, RDC</li>
+              <li>+243 81 234 56 78</li>
+              <li>contact@kaskisalu.cd</li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-gray-700 pt-8 text-center text-gray-400">
-          <p>&copy; 2023 MultiGroup. Tous droits réservés.</p>
+          <p>&copy; 2023 Kas Kisalu. Tous droits réservés.</p>
         </div>
       </div>
     </footer>

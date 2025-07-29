@@ -33,7 +33,7 @@ export default function Contact() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900">Adresse</h3>
-                      <p className="text-gray-600">123 Avenue des Champs<br />75000 Paris, France</p>
+                      <p className="text-gray-600">Avenue de la Paix<br />Kinshasa, RDC</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
@@ -42,7 +42,7 @@ export default function Contact() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900">Téléphone</h3>
-                      <p className="text-gray-600">+33 1 23 45 67 89</p>
+                      <p className="text-gray-600">+243 81 234 56 78</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
@@ -51,7 +51,7 @@ export default function Contact() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900">Email</h3>
-                      <p className="text-gray-600">contact@multigroup.fr</p>
+                      <p className="text-gray-600">contact@kaskisalu.cd</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
@@ -71,7 +71,7 @@ export default function Contact() {
                     asChild
                     className="bg-secondary text-white hover:bg-emerald-700"
                   >
-                    <a href="tel:+33123456789" className="flex items-center justify-center space-x-2">
+                    <a href="tel:+24381234567" className="flex items-center justify-center space-x-2">
                       <Phone className="h-4 w-4" />
                       <span>Appeler</span>
                     </a>
@@ -80,7 +80,7 @@ export default function Contact() {
                     asChild
                     className="bg-accent text-white hover:bg-amber-700"
                   >
-                    <a href="mailto:contact@multigroup.fr" className="flex items-center justify-center space-x-2">
+                    <a href="mailto:contact@kaskisalu.cd" className="flex items-center justify-center space-x-2">
                       <Mail className="h-4 w-4" />
                       <span>Email</span>
                     </a>
