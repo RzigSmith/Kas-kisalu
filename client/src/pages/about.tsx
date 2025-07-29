@@ -21,7 +21,7 @@ export default function About() {
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Notre Histoire</h2>
                 <p className="text-gray-600 mb-4">
-                  Fondée en 1995, Kas Kisalu a débuté comme une petite entreprise de construction avant de diversifier ses activités vers l'agriculture, l'élevage et le transport. Cette expansion naturelle répond aux besoins complémentaires de nos clients et de notre région.
+                  Fondée en 2023, Kas Kisalu a débuté comme une petite entreprise de construction avant de diversifier ses activités vers l'agriculture, l'élevage et le transport. Cette expansion naturelle répond aux besoins complémentaires de nos clients et de notre région.
                 </p>
                 <p className="text-gray-600 mb-6">
                   Aujourd'hui, nous sommes fiers d'être un acteur majeur dans ces quatre secteurs, alliant tradition et modernité pour offrir des services de qualité supérieure.
@@ -29,11 +29,11 @@ export default function About() {
                 
                 <div className="grid grid-cols-2 gap-6">
                   <div className="text-center p-4 bg-white rounded-lg shadow">
-                    <div className="text-2xl font-bold text-primary">28+</div>
+                    <div className="text-2xl font-bold text-primary">2+</div>
                     <div className="text-sm text-gray-600">Années d'expérience</div>
                   </div>
                   <div className="text-center p-4 bg-white rounded-lg shadow">
-                    <div className="text-2xl font-bold text-primary">150+</div>
+                    <div className="text-2xl font-bold text-primary">6+</div>
                     <div className="text-sm text-gray-600">Employés</div>
                   </div>
                 </div>
