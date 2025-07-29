@@ -1,0 +1,45 @@
+import { Link } from "wouter";
+import { Button } from "@/components/ui/button";
+
+interface NavigationItem {
+  href: string;
+  label: string;
+  color?: string;
+}
+
+interface MobileMenuProps {
+  isOpen: boolean;
+  onClose: () => void;
+  navigationItems: NavigationItem[];
+}
+
+export function MobileMenu({ isOpen, onClose, navigationItems }: MobileMenuProps) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="md:hidden fixed top-16 left-0 right-0 bg-white shadow-lg z-40">
+      <div className="px-2 pt-2 pb-3 space-y-1">
+        {navigationItems.map((item) => (
+          <Link key={item.href} href={item.href}>
+            <span
+              className={`block px-3 py-2 text-base font-medium text-gray-700 hover:text-${
+                item.color || "primary"
+              } cursor-pointer`}
+              onClick={onClose}
+            >
+              {item.label}
+            </span>
+          </Link>
+        ))}
+        <Link href="/contact">
+          <Button
+            className="block mx-3 mt-2 bg-primary text-white hover:bg-blue-700 w-[calc(100%-1.5rem)]"
+            onClick={onClose}
+          >
+            Contact
+          </Button>
+        </Link>
+      </div>
+    </div>
+  );
+}
