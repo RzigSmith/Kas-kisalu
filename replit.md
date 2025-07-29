@@ -24,6 +24,7 @@ Preferred communication style: Simple, everyday language.
 - **Database Provider**: Neon Database (serverless PostgreSQL)
 - **Session Management**: Built-in memory storage for development
 - **API Design**: RESTful endpoints with JSON responses
+- **Storage**: DatabaseStorage implementation using PostgreSQL for persistent data
 
 ### Project Structure
 The application follows a monorepo structure with clear separation:
@@ -42,8 +43,9 @@ The application follows a monorepo structure with clear separation:
 
 ### Backend Components
 - **Routes**: RESTful API endpoints for contact form submission and message retrieval
-- **Storage**: Abstract storage interface with in-memory implementation for development
+- **Storage**: Abstract storage interface with PostgreSQL database implementation
 - **Database Schema**: User and contact message tables defined with Drizzle ORM
+- **Database Connection**: Neon serverless PostgreSQL with connection pooling
 
 ### Shared Components
 - **Schema Definitions**: Zod schemas for data validation shared between frontend and backend
