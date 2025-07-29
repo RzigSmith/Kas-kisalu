@@ -17,21 +17,21 @@ import NotFound from "@/pages/not-found";
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
 
+  // Determine which home page to show based on auth status
+  const HomePage = () => {
+    if (isLoading) return <Landing />;
+    return isAuthenticated ? <Home /> : <Landing />;
+  };
+
   return (
     <Switch>
-      {isLoading || !isAuthenticated ? (
-        <Route path="/" component={Landing} />
-      ) : (
-        <>
-          <Route path="/" component={Home} />
-          <Route path="/construction" component={Construction} />
-          <Route path="/agriculture" component={Agriculture} />
-          <Route path="/elevage" component={Elevage} />
-          <Route path="/transport" component={Transport} />
-          <Route path="/about" component={About} />
-          <Route path="/contact" component={Contact} />
-        </>
-      )}
+      <Route path="/" component={HomePage} />
+      <Route path="/construction" component={Construction} />
+      <Route path="/agriculture" component={Agriculture} />
+      <Route path="/elevage" component={Elevage} />
+      <Route path="/transport" component={Transport} />
+      <Route path="/about" component={About} />
+      <Route path="/contact" component={Contact} />
       <Route component={NotFound} />
     </Switch>
   );

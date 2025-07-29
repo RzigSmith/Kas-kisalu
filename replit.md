@@ -4,6 +4,8 @@
 
 This is a full-stack web application for Kas Kisalu, a multi-sector business operating in construction, agriculture, livestock (élevage), and transportation. The application is built with React frontend, Express.js backend, and uses modern tooling including TypeScript, Tailwind CSS, and shadcn/ui components. The company is based in Kinshasa, RDC.
 
+**Latest Update (January 29, 2025)**: Integrated Replit Authentication system with user login/logout functionality, public access to all pages, and protected admin routes.
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -22,7 +24,8 @@ Preferred communication style: Simple, everyday language.
 - **Framework**: Express.js with TypeScript
 - **Database**: PostgreSQL with Drizzle ORM
 - **Database Provider**: Neon Database (serverless PostgreSQL)
-- **Session Management**: Built-in memory storage for development
+- **Authentication**: Replit Auth integration with session management
+- **Session Management**: PostgreSQL-based session storage with connect-pg-simple
 - **API Design**: RESTful endpoints with JSON responses
 - **Storage**: DatabaseStorage implementation using PostgreSQL for persistent data
 
@@ -42,9 +45,10 @@ The application follows a monorepo structure with clear separation:
 - **Contact Form**: Form with validation using react-hook-form and Zod
 
 ### Backend Components
-- **Routes**: RESTful API endpoints for contact form submission and message retrieval
+- **Routes**: RESTful API endpoints for contact form submission, message retrieval, and authentication
+- **Authentication**: Replit Auth setup with OpenID Connect, user session management
 - **Storage**: Abstract storage interface with PostgreSQL database implementation
-- **Database Schema**: User and contact message tables defined with Drizzle ORM
+- **Database Schema**: User, contact message, and session tables defined with Drizzle ORM
 - **Database Connection**: Neon serverless PostgreSQL with connection pooling
 
 ### Shared Components

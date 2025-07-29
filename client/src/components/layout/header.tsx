@@ -121,6 +121,9 @@ export function Header() {
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         navigationItems={navigationItems}
+        user={user}
+        isAuthenticated={isAuthenticated}
+        isLoading={isLoading}
       />
     </>
   );
