@@ -3,12 +3,10 @@ import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, LogOut } from "lucide-react";
 import { MobileMenu } from "./mobile-menu";
-import { useAuth } from "@/hooks/useAuth";
 
 export function Header() {
   const [location] = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user, isAuthenticated, isLoading } = useAuth();
 
   const navigationItems = [
     { href: "/", label: "Accueil" },
@@ -59,44 +57,16 @@ export function Header() {
                   </Button>
                 </Link>
                 
-                {!isLoading && (
-                  isAuthenticated ? (
-                    <div className="flex items-center space-x-2 ml-4">
-                      <div className="flex items-center space-x-2 text-sm text-gray-700">
-                        {(user as any)?.profileImageUrl && (
-                          <img 
-                            src={(user as any).profileImageUrl} 
-                            alt="Profile" 
-                            className="w-8 h-8 rounded-full object-cover"
-                          />
-                        )}
-                        <span>Bonjour, {(user as any)?.firstName || 'Utilisateur'}</span>
-                      </div>
-                      <Button 
-                        asChild
-                        variant="outline" 
-                        size="sm"
-                        className="text-gray-700 hover:text-gray-900"
-                      >
-                        <a href="/api/logout">
-                          <LogOut className="h-4 w-4 mr-1" />
-                          Déconnexion
-                        </a>
-                      </Button>
-                    </div>
-                  ) : (
-                    <Button 
-                      asChild
-                      variant="outline"
-                      className="ml-4"
-                    >
-                      <a href="/api/login">
-                        <User className="h-4 w-4 mr-1" />
-                        Connexion
-                      </a>
-                    </Button>
-                  )
-                )}
+                <Button 
+                  asChild
+                  variant="outline"
+                  className="ml-4"
+                >
+                  <a href="/api/login">
+                    <User className="h-4 w-4 mr-1" />
+                    Connexion
+                  </a>
+                </Button>
               </div>
             </div>
 
@@ -121,9 +91,6 @@ export function Header() {
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         navigationItems={navigationItems}
-        user={user}
-        isAuthenticated={isAuthenticated}
-        isLoading={isLoading}
       />
     </>
   );

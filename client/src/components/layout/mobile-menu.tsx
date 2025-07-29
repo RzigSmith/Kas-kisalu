@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { User, LogOut } from "lucide-react";
+import { User } from "lucide-react";
 
 interface NavigationItem {
   href: string;
@@ -12,12 +12,9 @@ interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
   navigationItems: NavigationItem[];
-  user?: any;
-  isAuthenticated: boolean;
-  isLoading: boolean;
 }
 
-export function MobileMenu({ isOpen, onClose, navigationItems, user, isAuthenticated, isLoading }: MobileMenuProps) {
+export function MobileMenu({ isOpen, onClose, navigationItems }: MobileMenuProps) {
   if (!isOpen) return null;
 
   return (
@@ -45,51 +42,22 @@ export function MobileMenu({ isOpen, onClose, navigationItems, user, isAuthentic
         </Link>
         
         {/* Authentication Section */}
-        {!isLoading && (
-          <div className="border-t border-gray-200 mt-4 pt-4">
-            {isAuthenticated ? (
-              <div className="px-3 space-y-3">
-                <div className="flex items-center space-x-2 text-sm text-gray-700">
-                  {(user as any)?.profileImageUrl && (
-                    <img 
-                      src={(user as any).profileImageUrl} 
-                      alt="Profile" 
-                      className="w-6 h-6 rounded-full object-cover"
-                    />
-                  )}
-                  <span>Bonjour, {(user as any)?.firstName || 'Utilisateur'}</span>
-                </div>
-                <Button 
-                  asChild
-                  variant="outline" 
-                  size="sm"
-                  className="w-full text-gray-700 hover:text-gray-900"
-                  onClick={onClose}
-                >
-                  <a href="/api/logout">
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Déconnexion
-                  </a>
-                </Button>
-              </div>
-            ) : (
-              <div className="px-3">
-                <Button 
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className="w-full"
-                  onClick={onClose}
-                >
-                  <a href="/api/login">
-                    <User className="h-4 w-4 mr-2" />
-                    Connexion
-                  </a>
-                </Button>
-              </div>
-            )}
+        <div className="border-t border-gray-200 mt-4 pt-4">
+          <div className="px-3">
+            <Button 
+              asChild
+              variant="outline"
+              size="sm"
+              className="w-full"
+              onClick={onClose}
+            >
+              <a href="/api/login">
+                <User className="h-4 w-4 mr-2" />
+                Connexion
+              </a>
+            </Button>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

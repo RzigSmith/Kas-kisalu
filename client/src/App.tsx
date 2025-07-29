@@ -3,9 +3,7 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useAuth } from "@/hooks/useAuth";
 import Home from "@/pages/home";
-import Landing from "@/pages/landing";
 import Construction from "@/pages/construction";
 import Agriculture from "@/pages/agriculture";
 import Elevage from "@/pages/elevage";
@@ -15,17 +13,9 @@ import Contact from "@/pages/contact";
 import NotFound from "@/pages/not-found";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
-
-  // Determine which home page to show based on auth status
-  const HomePage = () => {
-    if (isLoading) return <Landing />;
-    return isAuthenticated ? <Home /> : <Landing />;
-  };
-
   return (
     <Switch>
-      <Route path="/" component={HomePage} />
+      <Route path="/" component={Home} />
       <Route path="/construction" component={Construction} />
       <Route path="/agriculture" component={Agriculture} />
       <Route path="/elevage" component={Elevage} />
