@@ -65,7 +65,7 @@ export function Footer() {
             <ul className="space-y-2 text-gray-400">
               <li>Avenue de la Paix</li>
               <li>Kinshasa, RDC</li>
-              <li>+243 81 234 56 78</li>
+              <li>+243 858650570</li>
               <li>contact@kaskisalu.cd</li>
             </ul>
           </div>

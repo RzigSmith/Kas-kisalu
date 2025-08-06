@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import emailjs from "@emailjs/browser"; // Import EmailJS
 
 const contactFormSchema = z.object({
   firstName: z.string().min(1, "Le prénom est requis"),
@@ -50,7 +50,24 @@ export function ContactForm() {
 
   const contactMutation = useMutation({
     mutationFn: async (data: ContactFormValues) => {
-      return apiRequest("POST", "/api/contact", data);
+      const templateParams = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        sector: data.sector,
+        message: data.message,
+      };
+      try {
+        const result = await emailjs.send(
+          "service_v7rks3v", // Service ID
+          "template_qujdsih", // Template ID
+          templateParams,
+          "fPRzv15v4-jRkvcoS" // Public Key
+        );
+        return result;
+      } catch (error: any) {
+        throw new Error(error?.text || "Erreur EmailJS");
+      }
     },
     onSuccess: () => {
       toast({

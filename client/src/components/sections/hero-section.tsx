@@ -39,7 +39,7 @@ export function HeroSection() {
           <Button
             onClick={scrollToContact}
             variant="outline"
-            className="border-2 border-white text-white hover:bg-white hover:text-gray-900 px-8 py-4 text-lg font-semibold transition-all"
+            className="bg-gray-800 text-white hover:bg-blue-700 hover:text-white px-8 py-4 text-lg font-semibold transition-all"
           >
             Nous contacter
           </Button>

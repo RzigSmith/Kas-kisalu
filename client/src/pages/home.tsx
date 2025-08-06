@@ -4,6 +4,7 @@ import { HeroSection } from "@/components/sections/hero-section";
 import { SectorsOverview } from "@/components/sections/sectors-overview";
 import { Card, CardContent } from "@/components/ui/card";
 import { Handshake, Star, Leaf } from "lucide-react";
+import oursStory from "@/assets/oursStory.jpg"; // Assure-toi que le fichier existe
 
 export default function Home() {
   return (
@@ -19,7 +20,7 @@ export default function Home() {
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold text-gray-900 mb-4">À Propos de Kas Kisalu</h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Une entreprise familiale devenue leader multi-sectoriel grâce à l'expertise et l'innovation
+                Une entreprise  devenue leader multi-sectoriel grâce à l'expertise et l'innovation
               </p>
             </div>
 
@@ -27,7 +28,7 @@ export default function Home() {
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">Notre Histoire</h3>
                 <p className="text-gray-600 mb-4">
-                  Fondée en 1995, Kas Kisalu a débuté comme une petite entreprise de construction avant de diversifier ses activités vers l'agriculture, l'élevage et le transport. Cette expansion naturelle répond aux besoins complémentaires de nos clients et de notre région.
+                  Fondée en 2023, Kas Kisalu a débuté comme une petite entreprise de construction avant de diversifier ses activités vers l'agriculture, l'élevage et le transport. Cette expansion naturelle répond aux besoins complémentaires de nos clients et de notre région.
                 </p>
                 <p className="text-gray-600 mb-6">
                   Aujourd'hui, nous sommes fiers d'être un acteur majeur dans ces quatre secteurs, alliant tradition et modernité pour offrir des services de qualité supérieure.
@@ -35,11 +36,11 @@ export default function Home() {
                 
                 <div className="grid grid-cols-2 gap-6">
                   <div className="text-center p-4 bg-white rounded-lg shadow">
-                    <div className="text-2xl font-bold text-primary">28+</div>
+                    <div className="text-2xl font-bold text-primary">2+</div>
                     <div className="text-sm text-gray-600">Années d'expérience</div>
                   </div>
                   <div className="text-center p-4 bg-white rounded-lg shadow">
-                    <div className="text-2xl font-bold text-primary">150+</div>
+                    <div className="text-2xl font-bold text-primary">...+</div>
                     <div className="text-sm text-gray-600">Employés</div>
                   </div>
                 </div>
@@ -48,7 +49,7 @@ export default function Home() {
                 <div
                   className="h-80 rounded-lg shadow-lg bg-cover bg-center"
                   style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500')"
+                    backgroundImage: "url(" + oursStory + ")"
                   }}
                 ></div>
               </div>

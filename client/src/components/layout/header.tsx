@@ -3,6 +3,7 @@ import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, LogOut } from "lucide-react";
 import { MobileMenu } from "./mobile-menu";
+import logo from "@/assets/logo.jpg"; // Assure-toi que le fichier existe
 
 export function Header() {
   const [location] = useLocation();
@@ -24,11 +25,8 @@ export function Header() {
             <div className="flex items-center">
               <Link href="/">
                 <div className="flex items-center space-x-3 cursor-pointer">
-                  <img 
-                    src="/attached_assets/IMG_1406_1753812393970.jpeg" 
-                    alt="Kas Kisalu Logo" 
-                    className="h-10 w-10 rounded-full object-cover"
-                  />
+                  {/* Place le fichier image dans client/public/attached_assets/logo-kas-kisalu.jpg */}
+                  <img src={logo} alt="Kas Kisalu Logo" className="h-10 w-10 rounded-full object-cover" />
                   <h1 className="text-2xl font-bold text-primary">
                     Kas Kisalu
                   </h1>

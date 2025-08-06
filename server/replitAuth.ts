@@ -12,11 +12,28 @@ if (!process.env.REPLIT_DOMAINS) {
   throw new Error("Environment variable REPLIT_DOMAINS not provided");
 }
 
+if (!process.env.REPL_ID) {
+  throw new Error("REPL_ID must be set in your .env file");
+}
+const clientId = process.env.REPL_ID;
+const clientSecret = process.env.REPLIT_CLIENT_SECRET;
+
+if (!clientId || !clientSecret) {
+  throw new Error(
+    "REPL_ID and REPLIT_CLIENT_SECRET must be set in your .env file"
+  );
+}
+
+// Vérifiez aussi la présence de SESSION_SECRET si utilisé
+if (!process.env.SESSION_SECRET) {
+  throw new Error("SESSION_SECRET must be set in your .env file");
+}
+
 const getOidcConfig = memoize(
   async () => {
     return await client.discovery(
       new URL(process.env.ISSUER_URL ?? "https://replit.com/oidc"),
-      process.env.REPL_ID!
+      clientId
     );
   },
   { maxAge: 3600 * 1000 }
@@ -54,9 +71,7 @@ function updateUserSession(
   user.expires_at = user.claims?.exp;
 }
 
-async function upsertUser(
-  claims: any,
-) {
+async function upsertUser(claims: any) {
   await storage.upsertUser({
     id: claims["sub"],
     email: claims["email"],
@@ -84,8 +99,7 @@ export async function setupAuth(app: Express) {
     verified(null, user);
   };
 
-  for (const domain of process.env
-    .REPLIT_DOMAINS!.split(",")) {
+  for (const domain of process.env.REPLIT_DOMAINS!.split(",")) {
     const strategy = new Strategy(
       {
         name: `replitauth:${domain}`,
@@ -93,7 +107,7 @@ export async function setupAuth(app: Express) {
         scope: "openid email profile offline_access",
         callbackURL: `https://${domain}/api/callback`,
       },
-      verify,
+      verify
     );
     passport.use(strategy);
   }
