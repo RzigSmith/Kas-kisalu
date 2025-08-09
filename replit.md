@@ -4,7 +4,7 @@
 
 This is a full-stack web application for Kas Kisalu, a multi-sector business operating in construction, agriculture, livestock (élevage), and transportation. The application is built with React frontend, Express.js backend, and uses modern tooling including TypeScript, Tailwind CSS, and shadcn/ui components. The company is based in Kinshasa, RDC.
 
-**Latest Update (January 29, 2025)**: Integrated Replit Authentication system with user login/logout functionality, public access to all pages, and protected admin routes.
+**Latest Update (August 9, 2025)**: Successfully migrated project from Replit Agent to Replit environment. Resolved dependency conflicts by creating alternative server implementation using built-in Node.js modules. Working server available with API endpoints for health checks and contact form submissions.
 
 ## User Preferences
 
@@ -95,10 +95,11 @@ The application follows a monorepo structure with clear separation:
 ## Deployment Strategy
 
 ### Development Environment
-- **Frontend**: Vite dev server with HMR (Hot Module Replacement)
-- **Backend**: tsx with automatic restart on file changes
+- **Frontend**: Vite dev server with HMR (Hot Module Replacement) 
+- **Backend**: Alternative server implementation using Node.js built-in modules (simple-server.mjs)
 - **Database**: In-memory storage for rapid development
-- **Integration**: Vite proxy setup for API requests during development
+- **Migration Status**: Resolved dependency conflicts with @tailwindcss/vite and cross-env by implementing standalone server
+- **Working Endpoints**: /api/health, /api/contact (GET/POST)
 
 ### Production Build Process
 1. **Frontend Build**: Vite builds React app to `dist/public/` directory
