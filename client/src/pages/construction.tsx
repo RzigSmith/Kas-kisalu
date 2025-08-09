@@ -3,6 +3,17 @@ import { Footer } from "@/components/layout/footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { HardHat, Check } from "lucide-react";
 
+// Import dynamique des images realisations et maquettes
+function importAll(r: __WebpackModuleApi.RequireContext) {
+  return r.keys().map(r);
+}
+const realisationsImages: string[] = importAll(
+  require.context("@/assets", false, /^\.\/realisations.*\.(jpg|jpeg|png|webp)$/)
+);
+const maquetteImages: string[] = importAll(
+  require.context("@/assets", false, /^\.\/maquette.*\.(jpg|jpeg|png|webp)$/)
+);
+
 const projects = [
   {
     name: "Centre d'Affaires Moderne",
@@ -124,43 +135,50 @@ export default function Construction() {
               </div>
             </div>
 
+            {/* Section Maquettes */}
+            {maquetteImages.length > 0 && (
+              <div className="mb-16">
+                <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
+                  Nos Maquettes
+                </h2>
+                <div className="grid md:grid-cols-3 gap-6">
+                  {maquetteImages.map((img, idx) => (
+                    <div
+                      key={idx}
+                      className="h-48 rounded-lg shadow-lg bg-cover bg-center"
+                      style={{ backgroundImage: `url(${img})` }}
+                      title={`Maquette ${idx + 1}`}
+                    ></div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Projects Gallery */}
             <div className="mb-16">
               <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
                 Nos Réalisations
               </h2>
               <div className="grid md:grid-cols-3 gap-6">
-                {projects.map((project, index) => (
+                {/* Images realisations depuis assets */}
+                {realisationsImages.map((img, idx) => (
                   <Card
-                    key={index}
+                    key={idx}
                     className="overflow-hidden hover:shadow-xl transition-shadow"
                   >
                     <div
                       className="h-48 bg-cover bg-center"
-                      style={{ backgroundImage: `url(${project.image})` }}
+                      style={{ backgroundImage: `url(${img})` }}
+                      title={`Réalisation ${idx + 1}`}
                     ></div>
                     <CardContent className="p-6">
                       <h3 className="font-bold text-gray-900 mb-2">
-                        {project.name}
+                        Réalisation {idx + 1}
                       </h3>
-                      <p className="text-gray-600 text-sm mb-3">
-                        {project.description}
-                      </p>
-                      <div className="flex justify-between text-sm text-gray-500">
-                        <span>{project.year}</span>
-                        <span
-                          className={
-                            project.status === "Terminé"
-                              ? "text-green-600"
-                              : "text-blue-600"
-                          }
-                        >
-                          {project.status}
-                        </span>
-                      </div>
                     </CardContent>
                   </Card>
                 ))}
+                {/* ...existing code for projects if you want to keep them... */}
               </div>
             </div>
           </div>
