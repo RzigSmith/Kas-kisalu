@@ -3,13 +3,30 @@ import { Footer } from "@/components/layout/footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { HardHat, Check } from "lucide-react";
 
-// Import dynamique des images realisations et maquettes
-function importAll(r: __WebpackModuleApi.RequireContext) {
+// Ajout temporaire pour supporter require.context sous TypeScript
+declare global {
+  interface NodeRequire {
+    context(
+      directory: string,
+      useSubdirectories?: boolean,
+      regExp?: RegExp
+    ): {
+      keys: () => string[];
+      <T>(id: string): T;
+    };
+  }
+}
+
+// @ts-ignore
+function importAll(r: ReturnType<NodeRequire["context"]>) {
   return r.keys().map(r);
 }
+
+// @ts-ignore
 const realisationsImages: string[] = importAll(
   require.context("@/assets", false, /^\.\/realisations.*\.(jpg|jpeg|png|webp)$/)
 );
+// @ts-ignore
 const maquetteImages: string[] = importAll(
   require.context("@/assets", false, /^\.\/maquette.*\.(jpg|jpeg|png|webp)$/)
 );
