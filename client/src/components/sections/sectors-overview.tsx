@@ -97,13 +97,16 @@ export function SectorsOverview() {
 							>
 								<div
 									className={`h-48 bg-cover bg-center rounded-t-xl ${
-										sector.id === "construction" ? "bg-sector-construction" : ""
+										sector.id === "construction"
+											? "bg-sector-construction"
+											: sector.id === "agriculture"
+											? "bg-sector-agriculture"
+											: sector.id === "elevage"
+											? "bg-sector-elevage"
+											: sector.id === "transport"
+											? "bg-sector-transport"
+											: ""
 									}`}
-									style={
-										sector.id !== "construction"
-											? { backgroundImage: `url(${sector.image})` }
-											: undefined
-									}
 								></div>
 								<CardContent className="p-6">
 									<div className="flex items-center mb-4">

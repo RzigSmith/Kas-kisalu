@@ -12,13 +12,13 @@ export function Footer() {
               Votre partenaire multi-sectoriel pour tous vos projets de construction, agriculture, élevage et transport.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors" title="Facebook">
                 <Facebook className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors" title="LinkedIn">
                 <Linkedin className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors" title="Instagram">
                 <Instagram className="h-5 w-5" />
               </a>
             </div>

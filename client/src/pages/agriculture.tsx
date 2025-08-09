@@ -87,12 +87,3 @@ export default function Agriculture() {
     </div>
   );
 }
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-      <Footer />
-    </div>
-  );
-}

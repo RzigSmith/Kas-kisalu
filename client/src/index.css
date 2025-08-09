@@ -179,4 +179,19 @@
   .bg-transport-3 {
     background-image: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=200');
   }
+  
+  .sidebar-main-width {
+    --sidebar-width: 16rem;
+    --sidebar-width-icon: 3rem;
+  }
+  
+  .bg-sector-agriculture {
+    background-image: url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400');
+  }
+  .bg-sector-elevage {
+    background-image: url('https://images.unsplash.com/photo-1500595046743-cd271d694d30?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400');
+  }
+  .bg-sector-transport {
+    background-image: url('https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400');
+  }
 }

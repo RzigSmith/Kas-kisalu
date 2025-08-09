@@ -92,9 +92,3 @@ export default function Elevage() {
     </div>
   );
 }
-        </section>
-      </main>
-      <Footer />
-    </div>
-  );
-}
