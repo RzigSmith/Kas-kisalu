@@ -23,22 +23,13 @@ export default function Agriculture() {
               <div className="order-2 lg:order-1">
                 <div className="grid grid-cols-2 gap-4">
                   <div
-                    className="h-48 rounded-lg shadow-lg col-span-2 bg-cover bg-center"
-                    style={{
-                      backgroundImage: "url('https://images.unsplash.com/photo-1560493676-04071c5f467b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300')"
-                    }}
+                    className="h-48 rounded-lg shadow-lg col-span-2 bg-cover bg-center bg-agriculture-1"
                   ></div>
                   <div
-                    className="h-48 rounded-lg shadow-lg bg-cover bg-center"
-                    style={{
-                      backgroundImage: "url('https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300')"
-                    }}
+                    className="h-48 rounded-lg shadow-lg bg-cover bg-center bg-agriculture-2"
                   ></div>
                   <div
-                    className="h-48 rounded-lg shadow-lg bg-cover bg-center"
-                    style={{
-                      backgroundImage: "url('https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300')"
-                    }}
+                    className="h-48 rounded-lg shadow-lg bg-cover bg-center bg-agriculture-3"
                   ></div>
                 </div>
               </div>
@@ -87,6 +78,15 @@ export default function Agriculture() {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
+}
               </div>
             </div>
           </div>

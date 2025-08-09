@@ -40,10 +40,7 @@ export default function About() {
               </div>
               <div>
                 <div
-                  className="h-80 rounded-lg shadow-lg bg-cover bg-center"
-                  style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500')"
-                  }}
+                  className="h-80 rounded-lg shadow-lg bg-cover bg-center bg-about-hero"
                 ></div>
               </div>
             </div>
@@ -82,6 +79,9 @@ export default function About() {
         </section>
       </main>
       <Footer />
+    </div>
+  );
+}
     </div>
   );
 }

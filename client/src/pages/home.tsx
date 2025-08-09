@@ -47,10 +47,7 @@ export default function Home() {
               </div>
               <div>
                 <div
-                  className="h-80 rounded-lg shadow-lg bg-cover bg-center"
-                  style={{
-                    backgroundImage: "url(" + oursStory + ")"
-                  }}
+                  className="h-80 rounded-lg shadow-lg bg-cover bg-center bg-home-hero"
                 ></div>
               </div>
             </div>
@@ -89,6 +86,9 @@ export default function Home() {
         </section>
       </main>
       <Footer />
+    </div>
+  );
+}
     </div>
   );
 }

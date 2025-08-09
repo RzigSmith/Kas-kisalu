@@ -130,4 +130,53 @@
   .hover\:bg-transport:hover {
     background-color: hsl(var(--transport));
   }
+  
+  .bg-construction-1 {
+    background-image: url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300');
+  }
+  .bg-construction-2 {
+    background-image: url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300');
+  }
+  .bg-construction-3 {
+    background-image: url('https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300');
+  }
+  .bg-about-hero {
+    background-image: url('https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500');
+  }
+  .bg-agriculture-1 {
+    background-image: url('https://images.unsplash.com/photo-1560493676-04071c5f467b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300');
+  }
+  .bg-agriculture-2 {
+    background-image: url('https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300');
+  }
+  .bg-agriculture-3 {
+    background-image: url('https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300');
+  }
+  .bg-elevage-1 {
+    background-image: url('https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400');
+  }
+  .bg-elevage-2 {
+    background-image: url('https://pixabay.com/get/g426065aa07e427da365b2603cb68128df579752e2b67cd47467e7e7daf9dd6327841742fdfed368dad65b1eb34a17d07032a14a10bd42f1aac97bc65f34055d6_1280.jpg');
+  }
+  .bg-home-hero {
+    background-image: url('@/assets/oursStory.jpg');
+  }
+  .bg-landing-hero {
+    background-image: url('https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500');
+  }
+  .bg-hero-section {
+    background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=1080');
+  }
+  .bg-sector-construction {
+    background-image: url('@/assets/construction_img.jpg');
+  }
+  .bg-transport-1 {
+    background-image: url('https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=300');
+  }
+  .bg-transport-2 {
+    background-image: url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=200');
+  }
+  .bg-transport-3 {
+    background-image: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=200');
+  }
 }

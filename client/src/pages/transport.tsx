@@ -74,23 +74,14 @@ export default function Transport() {
               </div>
               <div>
                 <div
-                  className="h-48 rounded-lg shadow-lg mb-4 bg-cover bg-center"
-                  style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=300')"
-                  }}
+                  className="h-48 rounded-lg shadow-lg mb-4 bg-cover bg-center bg-transport-1"
                 ></div>
                 <div className="grid grid-cols-2 gap-4">
                   <div
-                    className="h-32 rounded-lg shadow-lg bg-cover bg-center"
-                    style={{
-                      backgroundImage: "url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=200')"
-                    }}
+                    className="h-32 rounded-lg shadow-lg bg-cover bg-center bg-transport-2"
                   ></div>
                   <div
-                    className="h-32 rounded-lg shadow-lg bg-cover bg-center"
-                    style={{
-                      backgroundImage: "url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=200')"
-                    }}
+                    className="h-32 rounded-lg shadow-lg bg-cover bg-center bg-transport-3"
                   ></div>
                 </div>
               </div>
@@ -120,6 +111,15 @@ export default function Transport() {
                   <div className="text-2xl font-bold text-gray-900">3</div>
                   <div className="text-sm text-gray-600">Entrepôts</div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
+}
               </div>
             </div>
           </div>

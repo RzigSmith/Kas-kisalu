@@ -128,27 +128,9 @@ export default function Construction() {
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div
-                  className="h-48 rounded-lg shadow-lg bg-cover bg-center"
-                  style={{
-                    backgroundImage:
-                      "url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300')",
-                  }}
-                ></div>
-                <div
-                  className="h-48 rounded-lg shadow-lg bg-cover bg-center"
-                  style={{
-                    backgroundImage:
-                      "url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300')",
-                  }}
-                ></div>
-                <div
-                  className="h-48 rounded-lg shadow-lg col-span-2 bg-cover bg-center"
-                  style={{
-                    backgroundImage:
-                      "url('https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300')",
-                  }}
-                ></div>
+                <div className="h-48 rounded-lg shadow-lg bg-cover bg-center bg-construction-1"></div>
+                <div className="h-48 rounded-lg shadow-lg bg-cover bg-center bg-construction-2"></div>
+                <div className="h-48 rounded-lg shadow-lg col-span-2 bg-cover bg-center bg-construction-3"></div>
               </div>
             </div>
 

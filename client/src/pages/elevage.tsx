@@ -61,16 +61,10 @@ export default function Elevage() {
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
                 <div
-                  className="h-64 rounded-lg shadow-lg mb-4 bg-cover bg-center"
-                  style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400')"
-                  }}
+                  className="h-64 rounded-lg shadow-lg mb-4 bg-cover bg-center bg-elevage-1"
                 ></div>
                 <div
-                  className="h-32 rounded-lg shadow-lg bg-cover bg-center"
-                  style={{
-                    backgroundImage: "url('https://pixabay.com/get/g426065aa07e427da365b2603cb68128df579752e2b67cd47467e7e7daf9dd6327841742fdfed368dad65b1eb34a17d07032a14a10bd42f1aac97bc65f34055d6_1280.jpg')"
-                  }}
+                  className="h-32 rounded-lg shadow-lg bg-cover bg-center bg-elevage-2"
                 ></div>
               </div>
               <div>
@@ -92,6 +86,12 @@ export default function Elevage() {
               </div>
             </div>
           </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
+}
         </section>
       </main>
       <Footer />

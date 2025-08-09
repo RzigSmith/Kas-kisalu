@@ -96,8 +96,14 @@ export function SectorsOverview() {
 								className={`group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-t-4 border-${sector.color}`}
 							>
 								<div
-									className="h-48 bg-cover bg-center rounded-t-xl"
-									style={{ backgroundImage: `url(${sector.image})` }}
+									className={`h-48 bg-cover bg-center rounded-t-xl ${
+										sector.id === "construction" ? "bg-sector-construction" : ""
+									}`}
+									style={
+										sector.id !== "construction"
+											? { backgroundImage: `url(${sector.image})` }
+											: undefined
+									}
 								></div>
 								<CardContent className="p-6">
 									<div className="flex items-center mb-4">
