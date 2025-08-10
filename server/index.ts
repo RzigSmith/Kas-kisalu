@@ -39,6 +39,12 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
+  // Setup Vite or serve static files
+  if (app.get("env") === "development") {
+    // Vite middleware should be set up before routes for HMR to work
+    await setupVite(app, server);
+  }
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
@@ -47,16 +53,15 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // Setup Vite or serve static files
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
+  if (app.get("env") !== "development") {
     serveStatic(app);
   }
 
   // Listen on localhost (Windows local)
   const port = parseInt(process.env.PORT || "5000", 10);
-  app.listen(port, "0.0.0.0", () => {
-    log(`Server running on http://0.0.0.0:${port}`);
+  app.listen(port, "127.0.0.1", () => {
+    log(`Server running on http://127.0.0.1:${port}`);
   });
 })();
+
+// NOTE: If you see "require is not defined", check your frontend (React/Vite) code for any usage of `require` and replace with ES module `import` syntax.

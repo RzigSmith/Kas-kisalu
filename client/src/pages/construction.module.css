@@ -1,0 +1,12 @@
+.bgImage {
+  background-size: cover;
+  background-position: center;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  height: 12rem; /* équivalent à h-48 */
+}
+
+/* Ajoute dynamiquement les backgrounds */
+.bg-img-0 { background-image: url('URL_IMAGE_0'); }
+.bg-img-1 { background-image: url('URL_IMAGE_1'); }
+/* ...etc pour chaque image... */

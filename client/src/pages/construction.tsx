@@ -2,34 +2,13 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { HardHat, Check } from "lucide-react";
+import styles from "./construction.module.css";
 
-// Ajout temporaire pour supporter require.context sous TypeScript
-declare global {
-  interface NodeRequire {
-    context(
-      directory: string,
-      useSubdirectories?: boolean,
-      regExp?: RegExp
-    ): {
-      keys: () => string[];
-      <T>(id: string): T;
-    };
-  }
-}
+const realisationsGlob = import.meta.glob('@/assets/realisations*.{jpg,jpeg,png,webp}', { eager: true });
+const realisationsImages: string[] = Object.values(realisationsGlob).map((mod: any) => mod.default);
 
-// @ts-ignore
-function importAll(r: ReturnType<NodeRequire["context"]>) {
-  return r.keys().map(r);
-}
-
-// @ts-ignore
-const realisationsImages: string[] = importAll(
-  require.context("@/assets", false, /^\.\/realisations.*\.(jpg|jpeg|png|webp)$/)
-);
-// @ts-ignore
-const maquetteImages: string[] = importAll(
-  require.context("@/assets", false, /^\.\/maquette.*\.(jpg|jpeg|png|webp)$/)
-);
+const maquetteGlob = import.meta.glob('@/assets/maquette*.{jpg,jpeg,png,webp}', { eager: true });
+const maquetteImages: string[] = Object.values(maquetteGlob).map((mod: any) => mod.default);
 
 const projects = [
   {
@@ -57,7 +36,6 @@ const projects = [
       "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300",
   },
 ];
-
 export default function Construction() {
   return (
     <div className="min-h-screen">
@@ -93,8 +71,7 @@ export default function Construction() {
                         Construction Résidentielle
                       </h3>
                       <p className="text-gray-600">
-                        Maisons individuelles, appartements et complexes
-                        résidentiels
+                        Maisons individuelles, appartements et complexes résidentiels
                       </p>
                     </div>
                   </div>
@@ -107,8 +84,7 @@ export default function Construction() {
                         Bâtiments Commerciaux
                       </h3>
                       <p className="text-gray-600">
-                        Bureaux, centres commerciaux et installations
-                        industrielles
+                        Bureaux, centres commerciaux et installations industrielles
                       </p>
                     </div>
                   </div>
@@ -144,7 +120,7 @@ export default function Construction() {
                   {maquetteImages.map((img, idx) => (
                     <div
                       key={idx}
-                      className="h-48 rounded-lg shadow-lg bg-cover bg-center"
+                      className={styles.bgImage}
                       style={{ backgroundImage: `url(${img})` }}
                       title={`Maquette ${idx + 1}`}
                     ></div>
@@ -159,14 +135,13 @@ export default function Construction() {
                 Nos Réalisations
               </h2>
               <div className="grid md:grid-cols-3 gap-6">
-                {/* Images realisations depuis assets */}
                 {realisationsImages.map((img, idx) => (
                   <Card
                     key={idx}
                     className="overflow-hidden hover:shadow-xl transition-shadow"
                   >
                     <div
-                      className="h-48 bg-cover bg-center"
+                      className={styles.bgImage}
                       style={{ backgroundImage: `url(${img})` }}
                       title={`Réalisation ${idx + 1}`}
                     ></div>
