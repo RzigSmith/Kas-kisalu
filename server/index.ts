@@ -59,8 +59,8 @@ app.use((req, res, next) => {
 
   // Listen on localhost (Windows local)
   const port = parseInt(process.env.PORT || "5000", 10);
-  app.listen(port, "127.0.0.1", () => {
-    log(`Server running on http://127.0.0.1:${port}`);
+  app.listen(port, "0.0.0.0", () => {
+    log(`Server running on http://0.0.0.0:${port}`);
   });
 })();
 
