@@ -5,8 +5,8 @@ import { HardHat, Check } from "lucide-react";
 import React, { useState } from "react";
 import styles from "./construction.module.css";
 
-const realisationsGlob = import.meta.glob('@/assets/realisations*.{jpg,jpeg,png,webp}', { eager: true });
-const realisationsImages: string[] = Object.values(realisationsGlob).map((mod: any) => mod.default);
+// const realisationsGlob = import.meta.glob('@/assets/realisations*.{jpg,jpeg,png,webp}', { eager: true });
+// const realisationsImages: string[] = Object.values(realisationsGlob).map((mod: any) => mod.default);
 
 const maquetteGlob = import.meta.glob('@/assets/maquette*.{jpg,jpeg,png,webp}', { eager: true });
 const maquetteImages: string[] = Object.values(maquetteGlob).map((mod: any) => mod.default);
@@ -228,7 +228,7 @@ export default function Construction() {
               </h2>
               <div className="grid md:grid-cols-3 gap-6">
                 {/* Projets classiques */}
-                {realisationsImages.map((img, idx) => (
+                {/* {realisationsImages.map((img, idx) => (
                   <Card
                     key={idx}
                     className="overflow-hidden hover:shadow-xl transition-shadow"
@@ -244,7 +244,7 @@ export default function Construction() {
                       </h3>
                     </CardContent>
                   </Card>
-                ))}
+                ))} */}
                 {/* Projet Mweka avec carousel */}
                 <Card className="overflow-hidden hover:shadow-xl transition-shadow col-span-1">
                   <ImageCarousel images={mwekaImages} title="Projet Mweka" />
