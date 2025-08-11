@@ -1,5 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { HardHat, Sprout, Beef, Truck, ArrowRight, ShoppingCart } from "lucide-react";
+import {
+	HardHat,
+	Sprout,
+	Beef,
+	Truck,
+	ArrowRight,
+	ShoppingCart,
+	Building2,
+} from "lucide-react";
 import { Link } from "wouter";
 import construction_img from "@/assets/construction_img.jpg"; // Assure-toi que le fichier existe
 
@@ -88,6 +96,23 @@ const sectors = [
 			"https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
 		href: "/ventes-materiaux",
 	},
+	{
+		id: "immobilier",
+		title: "Immobilier",
+		icon: Building2,
+		color: "immobilier",
+		description:
+			"Gestion, vente et location de biens immobiliers résidentiels et commerciaux.",
+		services: [
+			"Vente de maisons et appartements",
+			"Location de biens",
+			"Gestion immobilière",
+			"Conseil en investissement",
+		],
+		image:
+			"https://images.unsplash.com/photo-1464983953574-0892a716854b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
+		href: "/immobilier",
+	},
 ];
 
 export function SectorsOverview() {
@@ -99,7 +124,7 @@ export function SectorsOverview() {
 						Nos Domaines d'Expertise
 					</h2>
 					<p className="text-xl text-gray-600 max-w-3xl mx-auto">
-						Quatre secteurs d'activité complémentaires pour répondre à tous vos
+						Six secteurs d'activité complémentaires pour répondre à tous vos
 						besoins professionnels
 					</p>
 				</div>
