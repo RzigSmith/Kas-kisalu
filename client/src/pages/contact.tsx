@@ -80,7 +80,7 @@ export default function Contact() {
                     asChild
                     className="bg-accent text-white hover:bg-amber-700"
                   >
-                    <a href="mailto:contact@kaskisalu.cd" className="flex items-center justify-center space-x-2">
+                    <a href="mailto:kaskisalu@gmail.com" className="flex items-center justify-center space-x-2">
                       <Mail className="h-4 w-4" />
                       <span>Email</span>
                     </a>
