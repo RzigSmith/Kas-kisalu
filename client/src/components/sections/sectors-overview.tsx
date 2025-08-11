@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { HardHat, Sprout, Beef, Truck, ArrowRight } from "lucide-react";
+import { HardHat, Sprout, Beef, Truck, ArrowRight, ShoppingCart } from "lucide-react";
 import { Link } from "wouter";
 import construction_img from "@/assets/construction_img.jpg"; // Assure-toi que le fichier existe
 
@@ -70,6 +70,23 @@ const sectors = [
 		image:
 			"https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
 		href: "/transport",
+	},
+	{
+		id: "ventes-materiaux",
+		title: "Vente de Matériaux",
+		icon: ShoppingCart,
+		color: "materiaux",
+		description:
+			"Vente de matériaux de construction et fournitures pour tous vos projets, particuliers et professionnels.",
+		services: [
+			"Matériaux de construction",
+			"Fournitures électriques",
+			"Peintures et revêtements",
+			"Conseil et livraison",
+		],
+		image:
+			"https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
+		href: "/ventes-materiaux",
 	},
 ];
 

@@ -1,6 +1,16 @@
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Sprout, Wheat, Leaf, Cog } from "lucide-react";
+import React from "react";
+
+// Import dynamique des images agriculture
+const agricultureGlob = import.meta.glob(
+  "@/assets/agriculture*.{jpg,jpeg,png,webp}",
+  { eager: true }
+);
+const agricultureImages: string[] = Object.values(agricultureGlob).map(
+  (mod: any) => mod.default
+);
 
 export default function Agriculture() {
   return (
@@ -13,11 +23,32 @@ export default function Agriculture() {
               <div className="inline-flex items-center justify-center w-16 h-16 bg-agriculture/10 rounded-full mb-4">
                 <Sprout className="text-agriculture text-2xl" />
               </div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">Agriculture</h1>
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                Agriculture
+              </h1>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                 Agriculture moderne et durable avec technologies de pointe
               </p>
             </div>
+
+            {/* Galerie d'images agriculture */}
+            {agricultureImages.length > 0 && (
+              <div className="mb-16">
+                <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
+                  Galerie de nos activités agricoles
+                </h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {agricultureImages.map((img, idx) => (
+                    <div
+                      key={idx}
+                      className="h-48 rounded-lg shadow-lg bg-cover bg-center"
+                      style={{ backgroundImage: `url(${img})` }}
+                      title={`Agriculture ${idx + 1}`}
+                    ></div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
               <div className="order-2 lg:order-1">
@@ -34,15 +65,21 @@ export default function Agriculture() {
                 </div>
               </div>
               <div className="order-1 lg:order-2">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Nos Services Agricoles</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                  Nos Services Agricoles
+                </h2>
                 <div className="space-y-4">
                   <div className="flex items-start space-x-4">
                     <div className="flex-shrink-0 w-8 h-8 bg-agriculture/10 rounded-full flex items-center justify-center">
                       <Wheat className="text-agriculture text-sm" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">Cultures Céréalières</h3>
-                      <p className="text-gray-600">Production de blé, maïs, orge avec rendements optimisés</p>
+                      <h3 className="font-semibold text-gray-900">
+                        Cultures Céréalières
+                      </h3>
+                      <p className="text-gray-600">
+                        Production de blé, maïs, orge avec rendements optimisés
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
@@ -50,8 +87,12 @@ export default function Agriculture() {
                       <Leaf className="text-agriculture text-sm" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">Agriculture Biologique</h3>
-                      <p className="text-gray-600">Pratiques durables sans pesticides chimiques</p>
+                      <h3 className="font-semibold text-gray-900">
+                        Agriculture Biologique
+                      </h3>
+                      <p className="text-gray-600">
+                        Pratiques durables sans pesticides chimiques
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
@@ -59,22 +100,36 @@ export default function Agriculture() {
                       <Cog className="text-agriculture text-sm" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">Technologies Modernes</h3>
-                      <p className="text-gray-600">Équipements de précision et agriculture connectée</p>
+                      <h3 className="font-semibold text-gray-900">
+                        Technologies Modernes
+                      </h3>
+                      <p className="text-gray-600">
+                        Équipements de précision et agriculture connectée
+                      </p>
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-8 p-6 bg-agriculture/5 rounded-lg">
-                  <h3 className="font-bold text-gray-900 mb-3">Statistiques 2023</h3>
+                  <h3 className="font-bold text-gray-900 mb-3">
+                    Statistiques 2023
+                  </h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-agriculture">500+</div>
-                      <div className="text-sm text-gray-600">Hectares cultivés</div>
+                      <div className="text-2xl font-bold text-agriculture">
+                        500+
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Hectares cultivés
+                      </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-agriculture">15%</div>
-                      <div className="text-sm text-gray-600">Augmentation rendement</div>
+                      <div className="text-2xl font-bold text-agriculture">
+                        15%
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Augmentation rendement
+                      </div>
                     </div>
                   </div>
                 </div>

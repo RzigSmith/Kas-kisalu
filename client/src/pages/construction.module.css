@@ -10,3 +10,54 @@
 .bg-img-0 { background-image: url('URL_IMAGE_0'); }
 .bg-img-1 { background-image: url('URL_IMAGE_1'); }
 /* ...etc pour chaque image... */
+
+.carouselContainer {
+  position: relative;
+  width: 100%;
+  height: 12rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.carouselImage {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  border-radius: 0.5rem;
+  transition: background-image 0.3s;
+}
+.carouselControls {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+.carouselBtn {
+  background: rgba(255,255,255,0.8);
+  border: none;
+  border-radius: 9999px;
+  width: 2rem;
+  height: 2rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.carouselBtn:hover {
+  background: #e5e7eb;
+}
+.carouselIndicator {
+  font-size: 0.9rem;
+  color: #374151;
+  background: rgba(255,255,255,0.7);
+  padding: 0.1rem 0.7rem;
+  border-radius: 9999px;
+}

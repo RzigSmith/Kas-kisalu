@@ -11,6 +11,7 @@ import Transport from "@/pages/transport";
 import About from "@/pages/about";
 import Contact from "@/pages/contact";
 import NotFound from "@/pages/not-found";
+import VentesMateriaux from "@/pages/ventes-materiaux";
 
 function Router() {
   return (
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/transport" component={Transport} />
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
+      <Route path="/ventes-materiaux" component={VentesMateriaux} />
       <Route component={NotFound} />
     </Switch>
   );

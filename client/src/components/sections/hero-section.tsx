@@ -24,7 +24,7 @@ export function HeroSection() {
           Excellence Multi-Sectorielle
         </h1>
         <p className="text-xl md:text-2xl mb-8 text-gray-200 max-w-3xl mx-auto">
-          Votre partenaire de confiance dans la construction, l'agriculture, l'élevage et le transport
+          Votre partenaire de confiance dans differents secteurs : Agro pastoral(Agriculture, Élevage), BTP (Bâtiment et Travaux Publics), Transport et Logistique, Vente de Matériaux.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button

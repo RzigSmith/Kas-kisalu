@@ -15,6 +15,7 @@ export function Header() {
     { href: "/agriculture", label: "Agriculture", color: "agriculture" },
     { href: "/elevage", label: "Élevage", color: "elevage" },
     { href: "/transport", label: "Transport", color: "transport" },
+    { href: "/ventes-materiaux", label: "Ventes de Matériaux", color: "ventes-materiaux" },
   ];
 
   return (
@@ -54,17 +55,6 @@ export function Header() {
                     Contact
                   </Button>
                 </Link>
-                
-                {/* <Button 
-                  asChild
-                  variant="outline"
-                  className="ml-4"
-                >
-                  <a href="/api/login">
-                    <User className="h-4 w-4 mr-1" />
-                    Connexion
-                  </a>
-                </Button> */}
               </div>
             </div>
 
@@ -93,3 +83,4 @@ export function Header() {
     </>
   );
 }
+     

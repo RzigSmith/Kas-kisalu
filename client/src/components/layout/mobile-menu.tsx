@@ -51,10 +51,7 @@ export function MobileMenu({ isOpen, onClose, navigationItems }: MobileMenuProps
               className="w-full"
               onClick={onClose}
             >
-              <a href="/api/login">
-                <User className="h-4 w-4 mr-2" />
-                Connexion
-              </a>
+             
             </Button>
           </div>
         </div>

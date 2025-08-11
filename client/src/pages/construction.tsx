@@ -2,6 +2,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { HardHat, Check } from "lucide-react";
+import React, { useState } from "react";
 import styles from "./construction.module.css";
 
 const realisationsGlob = import.meta.glob('@/assets/realisations*.{jpg,jpeg,png,webp}', { eager: true });
@@ -9,6 +10,27 @@ const realisationsImages: string[] = Object.values(realisationsGlob).map((mod: a
 
 const maquetteGlob = import.meta.glob('@/assets/maquette*.{jpg,jpeg,png,webp}', { eager: true });
 const maquetteImages: string[] = Object.values(maquetteGlob).map((mod: any) => mod.default);
+
+const mwekaGlob = import.meta.glob('@/assets/mweka*.{jpg,jpeg,png,webp}', { eager: true });
+const mwekaImages: string[] = Object.values(mwekaGlob).map((mod: any) => mod.default);
+
+const carreauxGlob = import.meta.glob('@/assets/carreaux*.{jpg,jpeg,png,webp}', { eager: true });
+const carreauxImages: string[] = Object.values(carreauxGlob).map((mod: any) => mod.default);
+
+const yangambiGlob = import.meta.glob('@/assets/yangambi*.{jpg,jpeg,png,webp}', { eager: true });
+const yangambiImages: string[] = Object.values(yangambiGlob).map((mod: any) => mod.default);
+
+const cartoumeGlob = import.meta.glob('@/assets/cartoume*.{jpg,jpeg,png,webp}', { eager: true });
+const cartoumeImages: string[] = Object.values(cartoumeGlob).map((mod: any) => mod.default);
+
+const decoIntLingwalaGlob = import.meta.glob('@/assets/decoIntLingwala*.{jpg,jpeg,png,webp}', { eager: true });
+const decoIntLingwalaImages: string[] = Object.values(decoIntLingwalaGlob).map((mod: any) => mod.default);
+
+const renovCampGlob = import.meta.glob('@/assets/renovCamp*.{jpg,jpeg,png,webp}', { eager: true });
+const renovCampImages: string[] = Object.values(renovCampGlob).map((mod: any) => mod.default);
+
+const kabHuiGlob = import.meta.glob('@/assets/kabHui*.{jpg,jpeg,png,webp}', { eager: true });
+const kabHuiImages: string[] = Object.values(kabHuiGlob).map((mod: any) => mod.default);
 
 const projects = [
   {
@@ -35,7 +57,77 @@ const projects = [
     image:
       "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300",
   },
+  {
+    name: "Construction d’un immeuble R+4",
+    description: "École primaire et secondaire PPISG dans la commune de Lingwala / Mweka.",
+    year: "2024",
+    status: "En cours",
+    images: mwekaImages,
+  },
+  {
+    name: "Construction d’un immeuble appartement R+3",
+    description: "Dans la commune de Ngaliema / Quartier carreaux Congo.",
+    year: "2024",
+    status: "En cours",
+    images: carreauxImages,
+  },
+  {
+    name: "Construction d’un immeuble appartement R+2",
+    description: "Dans la commune de Ngiringiri / Quartier yangambi.",
+    year: "2024",
+    status: "En cours",
+    images: yangambiImages,
+  },
+  {
+    name: "Construction d’un immeuble appartement R+3",
+    description: "Commune de Ngiringiri / cartoume.",
+    year: "2024",
+    status: "En cours",
+    images: cartoumeImages,
+  },
+  {
+    name: "Décoration intérieure d’une maison à lingwala",
+    description: "Décoration intérieure d’une maison à lingwala.",
+    year: "2024",
+    status: "Terminé",
+    images: decoIntLingwalaImages,
+  },
+  {
+    name: "Rénovation d’un appartement",
+    description: "Rénovation d’un appartement dans la commune de Ngaliema / Ma campagne.",
+    year: "2024",
+    status: "Terminé",
+    images: renovCampImages,
+  },
+  {
+    name: "Construction d’un immeuble R+10",
+    description: "Dans la commune de Lingwala / kabinda huilerie.",
+    year: "2024",
+    status: "En cours",
+    images: kabHuiImages,
+  },
 ];
+
+// Carousel component (minimal, no external lib)
+function ImageCarousel({ images, title }: { images: string[]; title: string }) {
+  const [index, setIndex] = useState(0);
+  if (!images || images.length === 0) return null;
+  const prev = () => setIndex((i) => (i === 0 ? images.length - 1 : i - 1));
+  const next = () => setIndex((i) => (i === images.length - 1 ? 0 : i + 1));
+  return (
+    <div className={styles.carouselContainer}>
+      <div className={styles.carouselImage} style={{ backgroundImage: `url(${images[index]})` }} title={title}></div>
+      {images.length > 1 && (
+        <div className={styles.carouselControls}>
+          <button onClick={prev} className={styles.carouselBtn} aria-label="Précédent">‹</button>
+          <span className={styles.carouselIndicator}>{index + 1} / {images.length}</span>
+          <button onClick={next} className={styles.carouselBtn} aria-label="Suivant">›</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Construction() {
   return (
     <div className="min-h-screen">
@@ -135,6 +227,7 @@ export default function Construction() {
                 Nos Réalisations
               </h2>
               <div className="grid md:grid-cols-3 gap-6">
+                {/* Projets classiques */}
                 {realisationsImages.map((img, idx) => (
                   <Card
                     key={idx}
@@ -152,7 +245,111 @@ export default function Construction() {
                     </CardContent>
                   </Card>
                 ))}
-                {/* ...existing code for projects if you want to keep them... */}
+                {/* Projet Mweka avec carousel */}
+                <Card className="overflow-hidden hover:shadow-xl transition-shadow col-span-1">
+                  <ImageCarousel images={mwekaImages} title="Projet Mweka" />
+                  <CardContent className="p-6">
+                    <h3 className="font-bold text-gray-900 mb-2">
+                      Construction d’un immeuble R+4
+                    </h3>
+                    <p className="text-gray-700 mb-1">
+                      École primaire et secondaire PPISG
+                    </p>
+                    <p className="text-gray-500 text-sm">
+                      Commune de Lingwala / Mweka, 2024 – En cours
+                    </p>
+                  </CardContent>
+                </Card>
+                {/* Projet Carreaux avec carousel */}
+                <Card className="overflow-hidden hover:shadow-xl transition-shadow col-span-1">
+                  <ImageCarousel images={carreauxImages} title="Projet Carreaux" />
+                  <CardContent className="p-6">
+                    <h3 className="font-bold text-gray-900 mb-2">
+                      Construction d’un immeuble appartement R+3
+                    </h3>
+                    <p className="text-gray-700 mb-1">
+                      Quartier carreaux Congo
+                    </p>
+                    <p className="text-gray-500 text-sm">
+                      Commune de Ngaliema, 2024 – En cours
+                    </p>
+                  </CardContent>
+                </Card>
+                {/* Projet Yangambi avec carousel */}
+                <Card className="overflow-hidden hover:shadow-xl transition-shadow col-span-1">
+                  <ImageCarousel images={yangambiImages} title="Projet Yangambi" />
+                  <CardContent className="p-6">
+                    <h3 className="font-bold text-gray-900 mb-2">
+                      Construction d’un immeuble appartement R+2
+                    </h3>
+                    <p className="text-gray-700 mb-1">
+                      Quartier yangambi
+                    </p>
+                    <p className="text-gray-500 text-sm">
+                      Commune de Ngiringiri, 2024 – En cours
+                    </p>
+                  </CardContent>
+                </Card>
+                {/* Projet Cartoume avec carousel */}
+                <Card className="overflow-hidden hover:shadow-xl transition-shadow col-span-1">
+                  <ImageCarousel images={cartoumeImages} title="Projet Cartoume" />
+                  <CardContent className="p-6">
+                    <h3 className="font-bold text-gray-900 mb-2">
+                      Construction d’un immeuble appartement R+3
+                    </h3>
+                    <p className="text-gray-700 mb-1">
+                      Quartier cartoume
+                    </p>
+                    <p className="text-gray-500 text-sm">
+                      Commune de Ngiringiri, 2024 – En cours
+                    </p>
+                  </CardContent>
+                </Card>
+                {/* Projet Décoration intérieure Lingwala avec carousel */}
+                <Card className="overflow-hidden hover:shadow-xl transition-shadow col-span-1">
+                  <ImageCarousel images={decoIntLingwalaImages} title="Décoration intérieure Lingwala" />
+                  <CardContent className="p-6">
+                    <h3 className="font-bold text-gray-900 mb-2">
+                      Décoration intérieure d’une maison à lingwala
+                    </h3>
+                    <p className="text-gray-700 mb-1">
+                      Maison à Lingwala
+                    </p>
+                    <p className="text-gray-500 text-sm">
+                      2024 – Terminé
+                    </p>
+                  </CardContent>
+                </Card>
+                {/* Projet Rénovation Ma Campagne avec carousel */}
+                <Card className="overflow-hidden hover:shadow-xl transition-shadow col-span-1">
+                  <ImageCarousel images={renovCampImages} title="Rénovation Ma Campagne" />
+                  <CardContent className="p-6">
+                    <h3 className="font-bold text-gray-900 mb-2">
+                      Rénovation d’un appartement
+                    </h3>
+                    <p className="text-gray-700 mb-1">
+                      Ma campagne, Ngaliema
+                    </p>
+                    <p className="text-gray-500 text-sm">
+                      2024 – Terminé
+                    </p>
+                  </CardContent>
+                </Card>
+                {/* Projet Kabinda Huilerie avec carousel */}
+                <Card className="overflow-hidden hover:shadow-xl transition-shadow col-span-1">
+                  <ImageCarousel images={kabHuiImages} title="Projet Kabinda Huilerie" />
+                  <CardContent className="p-6">
+                    <h3 className="font-bold text-gray-900 mb-2">
+                      Construction d’un immeuble R+10
+                    </h3>
+                    <p className="text-gray-700 mb-1">
+                      Kabinda huilerie
+                    </p>
+                    <p className="text-gray-500 text-sm">
+                      Commune de Lingwala, 2024 – En cours
+                    </p>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </div>
