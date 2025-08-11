@@ -16,6 +16,7 @@ export function Header() {
     { href: "/elevage", label: "Élevage", color: "elevage" },
     { href: "/transport", label: "Transport", color: "transport" },
     { href: "/ventes-materiaux", label: "Ventes de Matériaux", color: "ventes-materiaux" },
+    { href: "/immobilier", label: "Immobilier", color: "immobilier" },
   ];
 
   return (
