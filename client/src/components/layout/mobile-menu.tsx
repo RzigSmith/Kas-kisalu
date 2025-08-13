@@ -44,15 +44,17 @@ export function MobileMenu({ isOpen, onClose, navigationItems }: MobileMenuProps
         {/* Authentication Section */}
         <div className="border-t border-gray-200 mt-4 pt-4">
           <div className="px-3">
-            <Button 
-              asChild
-              variant="outline"
-              size="sm"
-              className="w-full"
-              onClick={onClose}
-            >
-             
-            </Button>
+            <Link href="/login">
+              <Button 
+                variant="outline"
+                size="sm"
+                className="w-full flex items-center justify-center gap-2"
+                onClick={onClose}
+              >
+                <User size={16} />
+                Se connecter
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

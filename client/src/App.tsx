@@ -13,6 +13,9 @@ import Contact from "@/pages/contact";
 import NotFound from "@/pages/not-found";
 import VentesMateriaux from "@/pages/ventes-materiaux";
 import Immobilier from "@/pages/immobilier";
+import Login from "./pages/login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/admin/Dashboard";
 
 function Router() {
   return (
@@ -26,6 +29,9 @@ function Router() {
       <Route path="/contact" component={Contact} />
       <Route path="/ventes-materiaux" component={VentesMateriaux} />
       <Route path="/immobilier" component={Immobilier} />
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
+      <Route path="/admin/dashboard" component={Dashboard} />
       <Route component={NotFound} />
     </Switch>
   );

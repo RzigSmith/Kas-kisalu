@@ -14,3 +14,32 @@ if (!process.env.DATABASE_URL) {
 
 export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 export const db = drizzle({ client: pool, schema });
+
+// Exemple de définition de tables avec drizzle
+// À adapter selon votre schéma réel
+import { pgTable, serial, text, timestamp, jsonb } from "drizzle-orm/pg-core";
+
+export const users = pgTable(
+  "users",
+  {
+    id: serial("id").primaryKey(),
+    username: text("username").notNull(),
+    email: text("email").notNull().unique(),
+    date_inscriptions: timestamp("date_inscriptions", { withTimezone: false }),
+    role: text("role"),
+    password: text("password").notNull(),
+  },
+  { schema: "kaskisalu" }
+);
+
+export const projects = pgTable(
+  "projects",
+  {
+    id: serial("id").primaryKey(),
+    title: text("title").notNull(),
+    sector: text("sector").notNull(),
+    description: text("description").notNull(),
+    photos: jsonb("photos").default([]),
+  },
+  { schema: "kaskisalu" }
+);
