@@ -4,6 +4,8 @@ import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { insertContactMessageSchema } from "@shared/schema";
 import { z } from "zod";
+import { requireAdminAuth } from "./middlewares/auth.middleware";
+import adminRoutes from "./routes/admin.routes";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
@@ -55,6 +57,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+
+  // Admin routes
+  app.use("/admin", requireAdminAuth, adminRoutes);
 
   const httpServer = createServer(app);
   return httpServer;

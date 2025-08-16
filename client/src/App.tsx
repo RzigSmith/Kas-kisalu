@@ -15,7 +15,9 @@ import VentesMateriaux from "@/pages/ventes-materiaux";
 import Immobilier from "@/pages/immobilier";
 import Login from "./pages/login";
 import Register from "./pages/Register";
-import Dashboard from "./pages/admin/Dashboard";
+import Dashboard from "./pages/admin/dashboard";
+import ProjectForm from "./pages/admin/ProjectForm";
+import SiteManagement from "./pages/admin/SiteManagement";
 
 function Router() {
   return (
@@ -32,6 +34,8 @@ function Router() {
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       <Route path="/admin/dashboard" component={Dashboard} />
+      <Route path="/admin/project-form" component={ProjectForm} />
+      <Route path="/admin/site-management" component={SiteManagement} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -49,3 +53,5 @@ function App() {
 }
 
 export default App;
+
+// Si tu utilises API ici, remplace la valeur comme ci-dessus

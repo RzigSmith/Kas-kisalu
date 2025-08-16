@@ -3,19 +3,50 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { db, users } from "./db"; // retire migrate
+import { users } from "./db"; // retire migrate
 import multer from "multer";
-import realisationRoutes from "./routes/realisation.routes";
+import adminRoutes from "./routes/admin.routes";
 import projectRoutes from "./routes/project.routes";
+import realisationRoutes from "./routes/realisation.routes";
 import * as realisationModel from "./models/realisation.model";
 import { eq } from "drizzle-orm";
 import { and } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import session from "express-session";
+import path from "path";
+import fs from "fs";
+import { projects } from "./db";
+import { fileURLToPath } from "url";
+import { drizzle } from "drizzle-orm/neon-serverless";
+import { Pool } from "@neondatabase/serverless";
 
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Connexion NeonDB adaptée (serverless, SSL)
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  // NeonDB gère le SSL automatiquement avec sslmode=require dans l'URL
+});
+export const db = drizzle(pool);
+
+// Ajout du middleware express-session AVANT les routes
+app.use(session({
+  secret: process.env.SESSION_SECRET || "secret",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000,
+    sameSite: "lax", // "lax" pour le local, "none" en prod HTTPS
+    secure: false,   // false en local, true en prod HTTPS
+  }
+}));
+
 app.use(cors({
-  origin: "http://127.0.0.1:5173", // Port du frontend (Vite)
+  origin: "http://0.0.0.0:5173", // Port du frontend (Vite)
   credentials: true
 }));
 app.use(express.json());
@@ -56,8 +87,27 @@ app.use((req, res, next) => {
   next();
 });
 
-// Multer configuration pour upload de photos
-const upload = multer({ dest: "uploads/" });
+// Multer configuration pour upload d'images
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
+
+const multerStorage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, uploadDir),
+  filename: (_req, file, cb) => {
+    const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, unique + "-" + file.originalname.replace(/\s+/g, "_"));
+  }
+});
+const upload = multer({
+  storage: multerStorage,
+  limits: { fileSize: 20 * 1024 * 1024, files: 30 },
+  fileFilter: (_req, file, cb) => {
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.mimetype)) {
+      return cb(new Error("Seuls les fichiers jpg, png, webp sont autorisés"));
+    }
+    cb(null, true);
+  }
+});
 
 // Inscription utilisateur (NeonDB, sécurisé)
 app.post("/api/register", async (req: Request, res: Response) => {
@@ -100,6 +150,25 @@ app.post("/api/login", async (req: Request, res: Response) => {
     process.env.SESSION_SECRET || "secret",
     { expiresIn: "7d" }
   );
+
+  // Si admin, pose aussi le cookie signé admin_session
+  if (user.role === "admin") {
+    // Création de la session côté express-session
+    req.session.user = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role
+    };
+    res.cookie("admin_session", "active", {
+      signed: true,
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // 24h
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: process.env.NODE_ENV === "production",
+    });
+  }
+
   res.json({
     success: true,
     token,
@@ -107,12 +176,33 @@ app.post("/api/login", async (req: Request, res: Response) => {
   });
 });
 
-// Middleware pour vérifier la session admin
+// Middleware pour vérifier la session admin (cookie OU JWT)
 function requireAdminAuth(req: Request, res: Response, next: NextFunction) {
-  const session = req.signedCookies && req.signedCookies.admin_session;
-  if (session && session === "active") {
+  // Ajout d'un log pour debug session
+  console.log("Session express reçue:", req.session);
+
+  // Vérifie le cookie signé
+  const sessionCookie = req.signedCookies && req.signedCookies.admin_session;
+  if (sessionCookie && sessionCookie === "active") {
     return next();
   }
+
+  // Vérifie le JWT dans l'en-tête Authorization
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    const token = authHeader.slice(7);
+    try {
+      const payload = jwt.verify(token, process.env.SESSION_SECRET || "secret") as any;
+      if (payload.role === "admin") {
+        // Optionnel : tu peux attacher l'utilisateur à req.user
+        (req as any).user = payload;
+        return next();
+      }
+    } catch {
+      // Token invalide
+    }
+  }
+
   res.status(401).json({ message: "Authentification admin requise" });
 }
 
@@ -155,21 +245,37 @@ app.get("/admin/projects", requireAdminAuth, async (_req, res) => {
   res.json(projects);
 });
 
-app.post("/admin/projects", requireAdminAuth, upload.array("photos", 10), async (req: Request, res: Response) => {
-  const { title, sector, description } = req.body;
-  const photos = req.files ? (req.files as Express.Multer.File[]).map(f => f.path) : [];
-  if (!title || !sector || !description) {
+// POST /admin/projects : upload via champ "images"
+app.post("/admin/projects", requireAdminAuth, upload.array("images", 10), async (req: Request, res: Response) => {
+  const { project_name, description, address, status, sector } = req.body;
+  const images = req.files ? (req.files as Express.Multer.File[]).map(f => f.path) : [];
+  if (!project_name || !description || !status || !sector) {
     return res.status(400).json({ message: "Champs requis manquants" });
   }
-  await realisationModel.createRealisation({ title, sector, description, photos });
+  await realisationModel.createRealisation({
+    project_name,
+    description,
+    address,
+    status,
+    sector,
+    project_images: images
+  });
   res.json({ success: true });
 });
 
-app.put("/admin/projects/:id", requireAdminAuth, upload.array("photos", 10), async (req: Request, res: Response) => {
+// PUT /admin/projects/:id : upload via champ "images"
+app.put("/admin/projects/:id", requireAdminAuth, upload.array("images", 10), async (req: Request, res: Response) => {
   const id = parseInt(req.params.id, 10);
-  const { title, sector, description } = req.body;
-  const photos = req.files ? (req.files as Express.Multer.File[]).map(f => f.path) : undefined;
-  await realisationModel.updateRealisation(id, { title, sector, description, ...(photos ? { photos } : {}) });
+  const { project_name, description, address, status, sector } = req.body;
+  const images = req.files ? (req.files as Express.Multer.File[]).map(f => f.path) : undefined;
+  await realisationModel.updateRealisation(id, {
+    project_name,
+    description,
+    address,
+    status,
+    sector,
+    ...(images ? { project_images: images } : {})
+  });
   res.json({ success: true });
 });
 
@@ -202,11 +308,103 @@ app.get("/admin/stats", requireAdminAuth, async (_req, res) => {
   });
 });
 
-app.use("/api/realisations", realisationRoutes);
+app.use("/api/admin", adminRoutes);
 app.use("/api/projects", projectRoutes);
+app.use("/api/realisations", realisationRoutes);
+
+// GET /projects : liste tous les projets
+app.get("/projects", async (_req, res) => {
+  const rows = await db.select().from(projects);
+  const data = rows.map(row => ({
+    ...row,
+    project_images: typeof row.project_images === "string"
+      ? JSON.parse(row.project_images)
+      : Array.isArray(row.project_images)
+        ? row.project_images
+        : []
+  }));
+  res.json(data);
+});
+
+// POST /projects : ajout projet + upload images
+app.post("/projects", upload.array("project_images", 30), async (req: Request, res: Response) => {
+  try {
+    const { project_name, description, address, status, sector } = req.body;
+    if (!project_name || !description || !status || !sector) {
+      return res.status(400).json({ message: "Champs requis manquants" });
+    }
+    const images = req.files ? (req.files as Express.Multer.File[]).map(f => "/uploads/" + path.basename(f.path)) : [];
+    const insertData = {
+      project_name,
+      description,
+      address,
+      status,
+      sector,
+      project_images: JSON.stringify(images), // stocke comme string JSON
+      created_at: new Date()
+    };
+    const result = await db.insert(projects).values(insertData).returning();
+    res.json({ success: true, project: result[0] });
+  } catch (err: any) {
+    res.status(500).json({ message: err.message || "Erreur serveur" });
+  }
+});
+
+// PUT /projects/:id : modifier projet + remplacer images si upload
+app.put("/projects/:id", upload.array("project_images", 30), async (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    const { project_name, description, address, status, sector } = req.body;
+    const images = req.files ? (req.files as Express.Multer.File[]).map(f => "/uploads/" + path.basename(f.path)) : undefined;
+
+    // Récupère projet existant pour supprimer anciennes images si remplacées
+    const oldRows = await db.select().from(projects).where(eq(projects.id, id));
+    if (oldRows.length === 0) return res.status(404).json({ message: "Projet non trouvé" });
+
+    let updateData: any = { project_name, description, address, status, sector };
+    if (images && images.length > 0) {
+      // Supprime anciennes images locales
+      const oldImages = typeof oldRows[0].project_images === "string"
+        ? JSON.parse(oldRows[0].project_images)
+        : [];
+      oldImages.forEach((imgPath: string) => {
+        const absPath = path.join(__dirname, imgPath.replace(/^\/uploads\//, "uploads/"));
+        if (fs.existsSync(absPath)) fs.unlinkSync(absPath);
+      });
+      updateData.project_images = JSON.stringify(images); // stocke comme string JSON
+    }
+    await db.update(projects).set(updateData).where(eq(projects.id, id));
+    res.json({ success: true });
+  } catch (err: any) {
+    res.status(500).json({ message: err.message || "Erreur serveur" });
+  }
+});
+
+// DELETE /projects/:id : supprime projet et images locales
+app.delete("/projects/:id", async (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    const rows = await db.select().from(projects).where(eq(projects.id, id));
+    if (rows.length === 0) return res.status(404).json({ message: "Projet non trouvé" });
+    const images = typeof rows[0].project_images === "string"
+      ? JSON.parse(rows[0].project_images)
+      : [];
+    images.forEach((imgPath: string) => {
+      const absPath = path.join(__dirname, imgPath.replace(/^\/uploads\//, "uploads/"));
+      if (fs.existsSync(absPath)) fs.unlinkSync(absPath);
+    });
+    await db.delete(projects).where(eq(projects.id, id));
+    res.json({ success: true });
+  } catch (err: any) {
+    res.status(500).json({ message: err.message || "Erreur serveur" });
+  }
+});
+
+// Sert les images uploadées
+app.use("/uploads", express.static(uploadDir));
 
 (async () => {
-  // Vérifie et crée la table users si elle n'existe pas (sécurisé pour Postgres/NeonDB)
+  // Vérifie et crée la table users si elle n'existe pas
   try {
     await db.execute(`
       CREATE TABLE IF NOT EXISTS users (
@@ -224,6 +422,55 @@ app.use("/api/projects", projectRoutes);
     process.exit(1);
   }
 
+  // Vérifie et crée la table projects si elle n'existe pas
+  try {
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS projects (
+        id SERIAL PRIMARY KEY,
+        project_name VARCHAR(255) NOT NULL,
+        description VARCHAR(255) NOT NULL,
+        address TEXT,
+        status VARCHAR(100) NOT NULL,
+        project_images TEXT,
+        sector VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      );
+    `);
+    // Ajoute la colonne address si elle n'existe pas déjà
+    await db.execute(`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.columns
+          WHERE table_name='projects' AND column_name='address'
+        ) THEN
+          ALTER TABLE projects ADD COLUMN address TEXT;
+        END IF;
+      END
+      $$;
+    `);
+    log("Vérification/création de la table 'projects' OK.");
+  } catch (err) {
+    log("Erreur lors de la vérification/création de la table 'projects' : " + (err as Error).message);
+    process.exit(1);
+  }
+
+  // Vérifie et crée la table messages si elle n'existe pas
+  try {
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS messages (
+        id SERIAL PRIMARY KEY,
+        userName TEXT NOT NULL,
+        userEmail TEXT NOT NULL,
+        message TEXT NOT NULL
+      );
+    `);
+    log("Vérification/création de la table 'messages' OK.");
+  } catch (err) {
+    log("Erreur lors de la vérification/création de la table 'messages' : " + (err as Error).message);
+    process.exit(1);
+  }
+
   const server = await registerRoutes(app);
 
   // Setup Vite or serve static files
@@ -233,7 +480,7 @@ app.use("/api/projects", projectRoutes);
   }
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
+    const status = err.status || err.statusCode || 500; 
     const message = err.message || "Internal Server Error";
 
     res.status(status).json({ message });
@@ -244,10 +491,9 @@ app.use("/api/projects", projectRoutes);
     serveStatic(app);
   }
 
-  // Listen on localhost (Windows local)
-  const port = parseInt(process.env.PORT || "3000", 10);
-  app.listen(port, "127.0.0.1", () => {
-    log(`Server running on http://127.0.0.1:${port}`);
+  const port = parseInt(process.env.PORT || "2000", 10);
+  app.listen(port, "0.0.0.0", () => {
+    log(`Server running on http://0.0.0.0:${port}`);
   });
 })();
 

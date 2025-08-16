@@ -28,12 +28,15 @@ router.post("/", upload.array("project_images", 10), async (req, res) => {
       description,
       address,
       status,
-      sector,
-      project_images: images.join(",")
+      project_images: JSON.stringify(images), // <-- string JSON pour TEXT
+      sector
+      // created_at is auto-generated
     });
     res.status(201).json({ success: true, message: "Projet ajouté avec succès" });
-  } catch (err) {
-    res.status(500).json({ message: "Erreur serveur" });
+  } catch (err: any) {
+    console.error("Erreur lors de l'ajout du projet:", err);
+    // Toujours renvoyer du JSON
+    res.status(500).json({ message: err.message || "Erreur serveur" });
   }
 });
 

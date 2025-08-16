@@ -14,13 +14,13 @@ export default function Login() {
       const res = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
+        credentials: "include", // Important pour transmettre les cookies de session !
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
       if (data.success) {
         if (data.user?.role === "admin") {
-          setLocation("/dashboard");
+          setLocation("/admin/dashboard");
         } else {
           setLocation("/");
         }

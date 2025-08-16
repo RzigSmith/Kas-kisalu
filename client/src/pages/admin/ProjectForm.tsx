@@ -1,5 +1,6 @@
 import { useState, FormEvent } from "react";
 
+
 export default function ProjectForm() {
   const [project_name, setProjectName] = useState("");
   const [description, setDescription] = useState("");
@@ -20,12 +21,12 @@ export default function ProjectForm() {
     formData.append("description", description);
     formData.append("address", address);
     formData.append("status", status);
-    formData.append("sector", sector);
     if (project_images) {
       Array.from(project_images).forEach((file) => {
         formData.append("project_images", file);
       });
     }
+    formData.append("sector", sector);
 
     try {
       const res = await fetch("/api/projects", {
@@ -34,7 +35,13 @@ export default function ProjectForm() {
         credentials: "include",
       });
       if (!res.ok) {
-        const data = await res.json();
+        let data;
+        try {
+          data = await res.json();
+        } catch {
+          setError("Erreur lors de l'ajout du projet");
+          return;
+        }
         setError(data.message || "Erreur lors de l'ajout du projet");
         return;
       }
@@ -45,7 +52,8 @@ export default function ProjectForm() {
       setStatus("");
       setSector("");
       setProjectImages(null);
-      (document.getElementById("project-images-input") as HTMLInputElement).value = "";
+      const fileInput = document.getElementById("project-images-input") as HTMLInputElement | null;
+      if (fileInput) fileInput.value = "";
     } catch {
       setError("Erreur réseau");
     }
@@ -55,6 +63,7 @@ export default function ProjectForm() {
     <form onSubmit={handleSubmit} className="space-y-4 max-w-lg mx-auto bg-white p-6 rounded shadow">
       <h2 className="text-xl font-bold mb-2">Ajouter un projet</h2>
       <input
+        title="Nom du projet"
         type="text"
         placeholder="Nom du projet"
         value={project_name}
@@ -62,14 +71,17 @@ export default function ProjectForm() {
         className="w-full border px-3 py-2 rounded"
         required
       />
-      <textarea
-        placeholder="Description"
+      <input
+        title="Description"
+        type="text"
+        placeholder="Description du projet"
         value={description}
         onChange={e => setDescription(e.target.value)}
         className="w-full border px-3 py-2 rounded"
         required
       />
       <input
+        title="Adresse"
         type="text"
         placeholder="Adresse"
         value={address}
@@ -77,6 +89,7 @@ export default function ProjectForm() {
         className="w-full border px-3 py-2 rounded"
       />
       <select
+        title="Statut"
         value={status}
         onChange={e => setStatus(e.target.value)}
         className="w-full border px-3 py-2 rounded"
@@ -87,7 +100,17 @@ export default function ProjectForm() {
         <option value="Terminé">Terminé</option>
         <option value="Suspendu">Suspendu</option>
       </select>
-      <select
+    
+      <input
+        id="project-images-input"
+        type="file"
+        multiple
+        accept="image/*"
+        onChange={e => setProjectImages(e.target.files)}
+        className="w-full"
+      />
+        <select
+        title="Secteur"
         value={sector}
         onChange={e => setSector(e.target.value)}
         className="w-full border px-3 py-2 rounded"
@@ -98,15 +121,9 @@ export default function ProjectForm() {
         <option value="Élevage">Élevage</option>
         <option value="Transport">Transport</option>
         <option value="Agriculture">Agriculture</option>
+        <option value="Immobilier">Immobilier</option>
+        <option value="Ventes de matériaux">Ventes de matériaux</option>
       </select>
-      <input
-        id="project-images-input"
-        type="file"
-        multiple
-        accept="image/*"
-        onChange={e => setProjectImages(e.target.files)}
-        className="w-full"
-      />
       {success && <div className="text-green-600">{success}</div>}
       {error && <div className="text-red-600">{error}</div>}
       <button
