@@ -30,7 +30,7 @@ type Stats = {
   users: User[];
 };
 
-const API = "http://0.0.0.0:2000";
+const API = "http://0.0.0.0:5000";
 
 function Sidebar() {
   return (

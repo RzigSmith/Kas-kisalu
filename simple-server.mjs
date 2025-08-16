@@ -76,6 +76,71 @@ const server = createServer(async (req, res) => {
       }
     }
     
+    if (url.pathname === '/api/admin/stats') {
+      if (req.method === 'GET') {
+        // Sample data for dashboard
+        const statsData = {
+          totalProjects: 15,
+          totalUsers: 3,
+          projects: [
+            {
+              id: 1,
+              project_name: "Rénovation Campus Lingwala",
+              description: "Travaux de rénovation complète du campus",
+              address: "Lingwala, Kinshasa",
+              status: "Terminé",
+              sector: "Construction",
+              project_images: []
+            },
+            {
+              id: 2,
+              project_name: "Agriculture Mweka",
+              description: "Projet agricole dans la région de Mweka",
+              address: "Mweka, Kasaï",
+              status: "En cours",
+              sector: "Agriculture",
+              project_images: []
+            },
+            {
+              id: 3,
+              project_name: "Élevage Yangambi",
+              description: "Développement de l'élevage bovin",
+              address: "Yangambi",
+              status: "En cours",
+              sector: "Élevage",
+              project_images: []
+            },
+            {
+              id: 4,
+              project_name: "Transport Matériaux",
+              description: "Service de transport de matériaux de construction",
+              address: "Kinshasa",
+              status: "Actif",
+              sector: "Transport",
+              project_images: []
+            }
+          ],
+          users: [
+            {
+              id: 1,
+              username: "admin",
+              email: "admin@kaskisalu.com",
+              role: "administrateur"
+            },
+            {
+              id: 2,
+              username: "gestionnaire",
+              email: "gestionnaire@kaskisalu.com",
+              role: "gestionnaire"
+            }
+          ]
+        };
+        res.writeHead(200);
+        res.end(JSON.stringify(statsData));
+        return;
+      }
+    }
+    
     // 404 for unknown API routes
     res.writeHead(404);
     res.end(JSON.stringify({ error: 'API endpoint not found' }));
