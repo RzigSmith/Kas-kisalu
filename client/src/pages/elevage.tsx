@@ -131,8 +131,8 @@ export default function Elevage() {
                           className="h-48 bg-cover bg-center"
                           style={{
                             backgroundImage: `url(${
-                              project.project_images[0].startsWith("uploads/")
-                                ? `${window.location.origin}/${project.project_images[0].replace(/\\/g, "/")}`
+                              project.project_images[0].startsWith("/uploads/")
+                                ? `http://0.0.0.0:5000${project.project_images[0].replace(/\\/g, "/")}`
                                 : project.project_images[0]
                             })`,
                           }}
