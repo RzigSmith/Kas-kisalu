@@ -59,6 +59,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete contact message (protected route - requires authentication)
+  app.delete("/api/contact-messages/:id", isAuthenticated, async (req, res) => {
+    try {
+      await storage.deleteContactMessage(req.params.id);
+      res.json({ success: true, message: "Message supprimé avec succès" });
+    } catch (error) {
+      res.status(500).json({ 
+        success: false, 
+        message: "Erreur lors de la suppression du message" 
+      });
+    }
+  });
+
   // Projects routes
   app.use("/api/projects", projectRoutes);
 

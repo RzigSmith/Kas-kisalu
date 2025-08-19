@@ -7,12 +7,13 @@ import { Input } from "@/components/ui/input";
 import { MessageSquare, Search, Mail, Phone, Calendar, Trash2 } from "lucide-react";
 
 type Message = {
-  id: number;
-  name: string;
+  id: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  phone?: string;
+  sector: string;
   message: string;
-  created_at: string;
+  createdAt: string;
 };
 
 export default function Messages() {
@@ -23,7 +24,7 @@ export default function Messages() {
 
   useEffect(() => {
     setLoading(true);
-    fetch("/contact")
+    fetch("/api/contact-messages")
       .then(res => res.json())
       .then(data => {
         setMessages(Array.isArray(data) ? data : []);
@@ -35,11 +36,11 @@ export default function Messages() {
       });
   }, []);
 
-  const handleDelete = async (messageId: number) => {
+  const handleDelete = async (messageId: string) => {
     if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce message ?")) return;
     
     try {
-      const response = await fetch(`/contact/${messageId}`, {
+      const response = await fetch(`/api/contact-messages/${messageId}`, {
         method: 'DELETE',
       });
       
@@ -54,9 +55,10 @@ export default function Messages() {
   };
 
   const filteredMessages = messages.filter(message =>
-    message.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    `${message.firstName} ${message.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
     message.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    message.message.toLowerCase().includes(searchTerm.toLowerCase())
+    message.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    message.sector.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const formatDate = (dateString: string) => {
@@ -133,7 +135,7 @@ export default function Messages() {
             <CardContent>
               <div className="text-2xl font-bold">
                 {messages.filter(m => {
-                  const messageDate = new Date(m.created_at);
+                  const messageDate = new Date(m.createdAt);
                   const weekAgo = new Date();
                   weekAgo.setDate(weekAgo.getDate() - 7);
                   return messageDate > weekAgo;
@@ -153,7 +155,7 @@ export default function Messages() {
             <CardContent>
               <div className="text-2xl font-bold">
                 {messages.filter(m => {
-                  const messageDate = new Date(m.created_at);
+                  const messageDate = new Date(m.createdAt);
                   const today = new Date();
                   return messageDate.toDateString() === today.toDateString();
                 }).length}
@@ -182,10 +184,15 @@ export default function Messages() {
                       <div className="flex-1 space-y-3">
                         {/* Header */}
                         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                          <h3 className="font-semibold text-gray-900">{message.name}</h3>
-                          <Badge variant="outline" className="w-fit">
-                            {formatDate(message.created_at)}
-                          </Badge>
+                          <h3 className="font-semibold text-gray-900">{message.firstName} {message.lastName}</h3>
+                          <div className="flex gap-2">
+                            <Badge variant="outline" className="w-fit">
+                              {message.sector}
+                            </Badge>
+                            <Badge variant="outline" className="w-fit">
+                              {formatDate(message.createdAt)}
+                            </Badge>
+                          </div>
                         </div>
 
                         {/* Contact Info */}
@@ -196,14 +203,11 @@ export default function Messages() {
                               {message.email}
                             </a>
                           </div>
-                          {message.phone && (
-                            <div className="flex items-center gap-2">
-                              <Phone className="h-4 w-4" />
-                              <a href={`tel:${message.phone}`} className="hover:text-blue-600">
-                                {message.phone}
-                              </a>
+                          <div className="flex items-center gap-2">
+                            <div className="px-2 py-1 bg-gray-100 rounded text-xs">
+                              Secteur: {message.sector}
                             </div>
-                          )}
+                          </div>
                         </div>
 
                         {/* Message Content */}

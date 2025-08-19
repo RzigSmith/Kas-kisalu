@@ -495,6 +495,25 @@ app.use("/uploads", express.static(path.resolve(__dirname, "..", "uploads")));
     process.exit(1);
   }
 
+  // Vérifie et crée la table contact_messages si elle n'existe pas
+  try {
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS contact_messages (
+        id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid(),
+        first_name TEXT NOT NULL,
+        last_name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        sector TEXT NOT NULL,
+        message TEXT NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      );
+    `);
+    log("Vérification/création de la table 'contact_messages' OK.");
+  } catch (err) {
+    log("Erreur lors de la vérification/création de la table 'contact_messages' : " + (err as Error).message);
+    process.exit(1);
+  }
+
   const server = await registerRoutes(app);
 
   // Setup Vite or serve static files
