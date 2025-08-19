@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Bar } from "react-chartjs-2";
 import "chart.js/auto";
-import "./dashboard.css"; // Ajout du fichier CSS externe
 
 const Dashboard = () => {
   const [projects, setProjects] = useState([]);
