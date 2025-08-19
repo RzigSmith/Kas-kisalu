@@ -61,15 +61,29 @@ router.post("/", upload.array("project_images", 10), async (req, res) => {
 
 import { eq } from "drizzle-orm";
 
+// Route GET pour récupérer un projet par ID
 router.get("/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
+    console.log("GET /projects/:id - ID demandé:", id);
+    
+    if (isNaN(id)) {
+      return res.status(400).json({ message: "ID invalide" });
+    }
+    
     const rows = await db.select().from(projects).where(eq(projects.id, id));
-    if (!rows.length) return res.status(404).json({ message: "Projet non trouvé" });
+    console.log("Nombre de résultats trouvés:", rows.length);
+    
+    if (!rows.length) {
+      return res.status(404).json({ message: "Projet non trouvé" });
+    }
+
     const row = rows[0];
+    console.log("Projet trouvé:", row);
+    
     let images: string[] = [];
     try {
-      if (typeof row.project_images === "string") {
+      if (typeof row.project_images === "string" && row.project_images) {
         images = JSON.parse(row.project_images);
       } else if (Array.isArray(row.project_images)) {
         images = row.project_images;
@@ -78,12 +92,17 @@ router.get("/:id", async (req, res) => {
       console.error("Erreur parsing project_images:", row.project_images, e);
       images = [];
     }
+    
     // S'assure que chaque image commence par /uploads/
     images = images.map(img => img.startsWith("/uploads/") ? img : "/uploads/" + path.basename(img));
-    res.json({
+    
+    const result = {
       ...row,
       project_images: images
-    });
+    };
+    
+    console.log("Réponse envoyée:", result);
+    res.json(result);
   } catch (err: any) {
     console.error("Erreur get /:id:", err);
     res.status(500).json({ message: err.message || "Erreur serveur" });

@@ -25,13 +25,15 @@ export default function Projects() {
 
   useEffect(() => {
     setLoading(true);
-    fetch("/projects")
+    fetch("/api/projects")
       .then(res => res.json())
       .then(data => {
+        console.log("Projets chargés:", data);
         setProjects(data);
         setLoading(false);
       })
       .catch(err => {
+        console.error("Erreur chargement projets:", err);
         setError("Erreur lors du chargement des projets : " + err.message);
         setLoading(false);
       });
@@ -41,16 +43,22 @@ export default function Projects() {
     if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce projet ?")) return;
     
     try {
-      const response = await fetch(`/projects/${projectId}`, {
+      console.log("Tentative de suppression du projet:", projectId);
+      const response = await fetch(`/api/projects/${projectId}`, {
         method: 'DELETE',
       });
       
+      console.log("Réponse de suppression:", response.status);
+      
       if (response.ok) {
         setProjects(prev => prev.filter(p => p.id !== projectId));
+        alert("Projet supprimé avec succès");
       } else {
-        alert("Erreur lors de la suppression du projet");
+        const errorData = await response.json();
+        alert("Erreur lors de la suppression : " + (errorData.message || "Erreur inconnue"));
       }
     } catch (error) {
+      console.error("Erreur de suppression:", error);
       alert("Erreur de réseau lors de la suppression");
     }
   };

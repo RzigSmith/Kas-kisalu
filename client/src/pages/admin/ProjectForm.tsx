@@ -1,191 +1,234 @@
-import { useState, FormEvent } from "react";
-import { Link, useLocation } from "wouter";
-import { FaChartBar, FaProjectDiagram, FaPlusCircle, FaCog } from "react-icons/fa";
-import "./dashboard.css";
-
-// Sidebar identique à dashboard
-function Sidebar() {
-  const [location] = useLocation();
-  return (
-    <nav className="dashboard-sidebar">
-      <ul>
-        <li className={location === "/admin/dashboard" ? "active" : ""}>
-          <Link href="/admin/dashboard">
-            <FaChartBar style={{ marginRight: 8 }} />
-            Dashboard
-          </Link>
-        </li>
-        <li className={location === "/admin/projects-realised" ? "active" : ""}>
-          <Link href="/admin/projects-realised">
-            <FaProjectDiagram style={{ marginRight: 8 }} />
-            Projets réalisés
-          </Link>
-        </li>
-        <li className={location === "/admin/project-form" ? "active" : ""}>
-          <Link href="/admin/project-form">
-            <FaPlusCircle style={{ marginRight: 8 }} />
-            Ajouter un projet
-          </Link>
-        </li>
-        <li className={location === "/admin/site-management" ? "active" : ""}>
-          <Link href="/admin/site-management">
-            <FaCog style={{ marginRight: 8 }} />
-            Gestion du site
-          </Link>
-        </li>
-      </ul>
-    </nav>
-  );
-}
+import React, { useState } from "react";
+import { useLocation } from "wouter";
+import { AdminLayout } from "@/components/admin/admin-layout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function ProjectForm() {
-  const [project_name, setProjectName] = useState("");
+  const [, setLocation] = useLocation();
+  const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
   const [address, setAddress] = useState("");
   const [status, setStatus] = useState("");
   const [sector, setSector] = useState("");
-  const [project_images, setProjectImages] = useState<FileList | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [images, setImages] = useState<FileList | null>(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSuccess(null);
+    setLoading(true);
     setError(null);
+    setSuccess(null);
 
-    const formData = new FormData();
-    formData.append("project_name", project_name);
-    formData.append("description", description);
-    formData.append("address", address);
-    formData.append("status", status);
-    if (project_images) {
-      Array.from(project_images).forEach((file) => {
-        formData.append("project_images", file);
-      });
+    if (!projectName || !description || !status || !sector) {
+      setError("Tous les champs obligatoires doivent être remplis");
+      setLoading(false);
+      return;
     }
-    formData.append("sector", sector);
 
     try {
-      const res = await fetch("/api/projects", {
+      const formData = new FormData();
+      formData.append("project_name", projectName);
+      formData.append("description", description);
+      formData.append("address", address);
+      formData.append("status", status);
+      formData.append("sector", sector);
+
+      if (images) {
+        for (let i = 0; i < images.length; i++) {
+          formData.append("project_images", images[i]);
+        }
+      }
+
+      const response = await fetch("/api/projects", {
         method: "POST",
         body: formData,
-        credentials: "include",
       });
-      if (!res.ok) {
-        let data;
-        try {
-          data = await res.json();
-        } catch {
-          setError("Erreur lors de l'ajout du projet");
-          return;
-        }
-        setError(data.message || "Erreur lors de l'ajout du projet");
-        return;
-      }
-      setSuccess("Projet ajouté avec succès !");
-      setProjectName("");
-      setDescription("");
-      setAddress("");
-      setStatus("");
-      setSector("");
-      setProjectImages(null);
-      const fileInput = document.getElementById("project-images-input") as HTMLInputElement | null;
-      if (fileInput) fileInput.value = "";
-    } catch {
-      setError("Erreur réseau");
-    }
-  };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    sessionStorage.removeItem("token");
-    window.location.href = "/";
+      if (response.ok) {
+        setSuccess("Projet ajouté avec succès !");
+        // Rediriger vers la liste des projets après 2 secondes
+        setTimeout(() => {
+          setLocation("/admin/projects");
+        }, 2000);
+      } else {
+        const data = await response.json();
+        setError(data.message || "Erreur lors de l'ajout du projet");
+      }
+    } catch (err: any) {
+      setError("Erreur de réseau : " + err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="dashboard-layout">
-      <Sidebar />
-      <div className="dashboard-content">
-        <div className="dashboard-header" style={{ marginBottom: "1rem", textAlign: "right" }}>
-          <button className="dashboard-logout-btn" onClick={handleLogout}>
-            Déconnexion
-          </button>
+    <AdminLayout>
+      <div className="space-y-6">
+        {/* Header */}
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Ajouter un projet</h1>
+          <p className="text-gray-600">Créez un nouveau projet pour votre portfolio</p>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-4 max-w-lg mx-auto bg-white p-6 rounded shadow">
-          <h2 className="text-xl font-bold mb-2">Ajouter un projet</h2>
-          <input
-            title="Nom du projet"
-            type="text"
-            placeholder="Nom du projet"
-            value={project_name}
-            onChange={e => setProjectName(e.target.value)}
-            className="w-full border px-3 py-2 rounded"
-            required
-          />
-          <input
-            title="Description"
-            type="text"
-            placeholder="Description du projet"
-            value={description}
-            onChange={e => setDescription(e.target.value)}
-            className="w-full border px-3 py-2 rounded"
-            required
-          />
-          <input
-            title="Adresse"
-            type="text"
-            placeholder="Adresse"
-            value={address}
-            onChange={e => setAddress(e.target.value)}
-            className="w-full border px-3 py-2 rounded"
-          />
-          <select
-            title="Statut"
-            value={status}
-            onChange={e => setStatus(e.target.value)}
-            className="w-full border px-3 py-2 rounded"
-            required
-          >
-            <option value="">Statut</option>
-            <option value="En cours">En cours</option>
-            <option value="Terminé">Terminé</option>
-            <option value="Suspendu">Suspendu</option>
-          </select>
-        
-          <input
-            id="project-images-input"
-            type="file"
-            multiple
-            accept="image/*"
-            placeholder="Sélectionnez des images"
-            onChange={e => setProjectImages(e.target.files)}
-            className="w-full"
-          />
-            <select
-            title="Secteur"
-            value={sector}
-            onChange={e => setSector(e.target.value)}
-            className="w-full border px-3 py-2 rounded"
-            required
-          >
-            <option value="">Secteur</option>
-            <option value="Construction">Construction</option>
-            <option value="Élevage">Élevage</option>
-            <option value="Transport">Transport</option>
-            <option value="Agriculture">Agriculture</option>
-            <option value="Immobilier">Immobilier</option>
-            <option value="Ventes de matériaux">Ventes de matériaux</option>
-          </select>
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-          >
-            Ajouter
-          </button>
-          {success && <div className="text-green-600">{success}</div>}
-          {error && <div className="text-red-600">{error}</div>}
-        </form>
+
+        {/* Messages */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md">
+            {success}
+          </div>
+        )}
+
+        {/* Formulaire */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Informations du projet</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Nom du projet */}
+                <div className="space-y-2">
+                  <Label htmlFor="project_name">
+                    Nom du projet <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="project_name"
+                    type="text"
+                    value={projectName}
+                    onChange={(e) => setProjectName(e.target.value)}
+                    placeholder="Entrez le nom du projet"
+                    required
+                    data-testid="input-project-name"
+                  />
+                </div>
+
+                {/* Secteur */}
+                <div className="space-y-2">
+                  <Label htmlFor="sector">
+                    Secteur <span className="text-red-500">*</span>
+                  </Label>
+                  <Select value={sector} onValueChange={setSector} required>
+                    <SelectTrigger data-testid="select-sector">
+                      <SelectValue placeholder="Sélectionnez un secteur" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Construction">Construction</SelectItem>
+                      <SelectItem value="Agriculture">Agriculture</SelectItem>
+                      <SelectItem value="Élevage">Élevage</SelectItem>
+                      <SelectItem value="Transport">Transport</SelectItem>
+                      <SelectItem value="Ventes-matériaux">Ventes-matériaux</SelectItem>
+                      <SelectItem value="Immobilier">Immobilier</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="space-y-2">
+                <Label htmlFor="description">
+                  Description <span className="text-red-500">*</span>
+                </Label>
+                <Textarea
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Décrivez le projet en détail"
+                  rows={4}
+                  required
+                  data-testid="input-description"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Adresse */}
+                <div className="space-y-2">
+                  <Label htmlFor="address">Adresse</Label>
+                  <Input
+                    id="address"
+                    type="text"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    placeholder="Adresse du projet (optionnel)"
+                    data-testid="input-address"
+                  />
+                </div>
+
+                {/* Statut */}
+                <div className="space-y-2">
+                  <Label htmlFor="status">
+                    Statut <span className="text-red-500">*</span>
+                  </Label>
+                  <Select value={status} onValueChange={setStatus} required>
+                    <SelectTrigger data-testid="select-status">
+                      <SelectValue placeholder="Sélectionnez un statut" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="En attente">En attente</SelectItem>
+                      <SelectItem value="En cours">En cours</SelectItem>
+                      <SelectItem value="Terminé">Terminé</SelectItem>
+                      <SelectItem value="Annulé">Annulé</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Images */}
+              <div className="space-y-2">
+                <Label htmlFor="images">Images du projet</Label>
+                <Input
+                  id="images"
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={(e) => setImages(e.target.files)}
+                  className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  data-testid="input-images"
+                />
+                <p className="text-sm text-gray-500">
+                  Vous pouvez sélectionner plusieurs images (formats: JPG, PNG, WebP)
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="flex justify-between pt-6">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setLocation("/admin/projects")}
+                  data-testid="button-cancel"
+                >
+                  Annuler
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  data-testid="button-submit"
+                >
+                  {loading ? "Ajout en cours..." : "Ajouter le projet"}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
       </div>
-    </div>
+    </AdminLayout>
   );
 }
