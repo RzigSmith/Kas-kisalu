@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const router = Router();
-const pathToUploads = path.resolve(__dirname, "uploads"); // Dossier server/uploads
+const pathToUploads = path.resolve(__dirname, "..", "..", "uploads"); // Dossier uploads à la racine
 
 // Route GET pour récupérer tous les projets
 router.get("/", async (req, res) => {
