@@ -137,7 +137,7 @@ function DashboardMain() {
   return (
     <div className="dashboard-responsive-container">
       {error && (
-        <div className="dashboard-error" style={{ marginBottom: 24 }}>
+        <div className="dashboard-error">
           {error}
         </div>
       )}
@@ -175,7 +175,7 @@ function DashboardMain() {
             {stats?.users?.length
               ? stats.users.map((u) => (
                   <li key={u.id}>
-                    <strong>{u.username}</strong> — <span style={{color:"#1976d2"}}>{u.email}</span> — <span style={{color:"#d32f2f"}}>{u.role}</span>
+                    <strong>{u.username}</strong> — <span className="dashboard-card-value">{u.email}</span> — <span style={{color:"#d32f2f"}}>{u.role}</span>
                   </li>
                 ))
               : <li>Aucun utilisateur</li>
@@ -187,36 +187,19 @@ function DashboardMain() {
           <ul>
             {stats?.projects?.length
               ? stats.projects.map((p) => (
-                  <li key={p.id} style={{display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8}}>
+                  <li key={p.id} className="dashboard-project-item">
                     <span>
-                      <strong>{p.project_name}</strong> — <span style={{color:"#1976d2"}}>{p.sector}</span> — <span style={{color:"#43a047"}}>{p.status}</span>
+                      <strong>{p.project_name}</strong> — <span className="dashboard-card-value">{p.sector}</span> — <span style={{color:"#43a047"}}>{p.status}</span>
                     </span>
-                    <span>
+                    <span className="dashboard-project-actions">
                       <button
                         className="dashboard-edit-btn"
-                        style={{
-                          marginRight: 8,
-                          background: "#1976d2",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: 4,
-                          padding: "4px 10px",
-                          cursor: "pointer"
-                        }}
                         onClick={() => handleEdit(p.id)}
                       >
                         Éditer
                       </button>
                       <button
                         className="dashboard-delete-btn"
-                        style={{
-                          background: "#d32f2f",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: 4,
-                          padding: "4px 10px",
-                          cursor: "pointer"
-                        }}
                         onClick={() => handleDelete(p.id)}
                       >
                         Supprimer
@@ -242,6 +225,23 @@ export default function Dashboard() {
     window.location.href = "/";
   };
 
+  return (
+    <div className="dashboard-layout">
+      <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
+      <div className="dashboard-content">
+        <button className="sidebar-toggle floating" onClick={() => setSidebarOpen(!sidebarOpen)}>
+          ☰
+        </button>
+        <div className="dashboard-header">
+          <button className="dashboard-logout-btn" onClick={handleLogout}>
+            Déconnexion
+          </button>
+        </div>
+        <DashboardMain />
+      </div>
+    </div>
+  );
+}
   return (
     <div className="dashboard-layout">
       <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />

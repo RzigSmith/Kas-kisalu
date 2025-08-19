@@ -150,7 +150,7 @@ export default function ProjectEdit() {
     <div className="dashboard-layout">
       <Sidebar />
       <div className="dashboard-content">
-        <div className="dashboard-header" style={{ marginBottom: "1rem", textAlign: "right" }}>
+        <div className="dashboard-header">
           <button className="dashboard-logout-btn" onClick={handleLogout}>
             Déconnexion
           </button>
