@@ -19,6 +19,9 @@ import Dashboard from "./pages/admin/dashboard";
 import ProjectForm from "./pages/admin/ProjectForm";
 import SiteManagement from "./pages/admin/SiteManagement";
 import ProjectEdit from "./pages/admin/ProjectEdit";
+import Projects from "./pages/admin/projects";
+import Stats from "./pages/admin/stats";
+import Messages from "./pages/admin/messages";
 
 function Router() {
   return (
@@ -38,9 +41,10 @@ function Router() {
       <Route path="/admin/project-form" component={ProjectForm} />
       <Route path="/admin/site-management" component={SiteManagement} />
       <Route path="/admin/project-edit/:id" component={ProjectEdit} />
-      <Route path="/admin/projects-realised" component={Dashboard} />
       <Route path="/admin/project-edit" component={ProjectEdit} />
-      <Route path="/upload" component={ProjectEdit} />
+      <Route path="/admin/projects" component={Projects} />
+      <Route path="/admin/stats" component={Stats} />
+      <Route path="/admin/messages" component={Messages} />
       <Route component={NotFound} />
     </Switch>
   );
