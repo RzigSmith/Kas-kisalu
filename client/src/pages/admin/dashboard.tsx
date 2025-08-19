@@ -242,19 +242,3 @@ export default function Dashboard() {
     </div>
   );
 }
-  return (
-    <div className="dashboard-layout">
-      <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-      <div className="dashboard-content">
-        <button className="sidebar-toggle floating" onClick={() => setSidebarOpen(!sidebarOpen)}>
-          ☰
-        </button>
-        <div className="dashboard-header" style={{ marginBottom: "1rem", textAlign: "right" }}>
-          <button className="dashboard-logout-btn" onClick={handleLogout}>
-            Déconnexion
-          </button>
-        </div>
-        <DashboardMain />
-      </div>
-    </div>
-  );
