@@ -141,6 +141,168 @@ const server = createServer(async (req, res) => {
       }
     }
     
+    // Add /api/admin/stats endpoint for dashboard
+    if (url.pathname === '/api/admin/stats') {
+      res.setHeader('Content-Type', 'application/json');
+      
+      if (req.method === 'GET') {
+        const statsData = {
+          totalProjects: 6,
+          activeProjects: 3,
+          completedProjects: 2,
+          sectors: {
+            construction: 2,
+            agriculture: 2, 
+            elevage: 1,
+            transport: 1
+          }
+        };
+        
+        res.writeHead(200);
+        res.end(JSON.stringify(statsData));
+        return;
+      }
+    }
+
+    // Add /api/projects endpoints for compatibility with admin forms
+    if (url.pathname === '/api/projects' || url.pathname.startsWith('/api/projects/')) {
+      res.setHeader('Content-Type', 'application/json');
+      
+      // Handle individual project GET/PUT by ID
+      const projectMatch = url.pathname.match(/^\/api\/projects\/(\d+)$/);
+      if (projectMatch && req.method === 'GET') {
+        const projectId = parseInt(projectMatch[1]);
+        const projectsData = [
+          {
+            id: 1,
+            project_name: "Rénovation Campus Lingwala",
+            description: "Travaux de rénovation complète du campus universitaire avec modernisation des infrastructures",
+            address: "Lingwala, Kinshasa",
+            status: "Terminé",
+            sector: "Construction",
+            project_images: [],
+            created_at: new Date('2024-01-15').toISOString()
+          },
+          {
+            id: 2,
+            project_name: "Agriculture Mweka",
+            description: "Projet agricole moderne dans la région de Mweka avec techniques durables",
+            address: "Mweka, Kasaï",
+            status: "En cours",
+            sector: "Agriculture",
+            project_images: [],
+            created_at: new Date('2024-03-20').toISOString()
+          },
+          {
+            id: 3,
+            project_name: "Élevage Yangambi",
+            description: "Développement de l'élevage bovin avec amélioration génétique",
+            address: "Yangambi",
+            status: "En cours",
+            sector: "Élevage",
+            project_images: [],
+            created_at: new Date('2024-02-10').toISOString()
+          }
+        ];
+        
+        const project = projectsData.find(p => p.id === projectId);
+        if (project) {
+          res.writeHead(200);
+          res.end(JSON.stringify(project));
+        } else {
+          res.writeHead(404);
+          res.end(JSON.stringify({ error: 'Project not found' }));
+        }
+        return;
+      }
+
+      if (projectMatch && req.method === 'PUT') {
+        const body = await parseBody(req);
+        console.log('Project update:', body);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, message: 'Projet mis à jour avec succès!' }));
+        return;
+      }
+      
+      if (url.pathname === '/api/projects' && req.method === 'GET') {
+        // Return all projects
+        const projectsData = [
+          {
+            id: 1,
+            project_name: "Rénovation Campus Lingwala",
+            description: "Travaux de rénovation complète du campus universitaire avec modernisation des infrastructures",
+            address: "Lingwala, Kinshasa",
+            status: "Terminé",
+            sector: "Construction",
+            project_images: [],
+            created_at: new Date('2024-01-15').toISOString()
+          },
+          {
+            id: 2,
+            project_name: "Agriculture Mweka",
+            description: "Projet agricole moderne dans la région de Mweka avec techniques durables",
+            address: "Mweka, Kasaï",
+            status: "En cours",
+            sector: "Agriculture",
+            project_images: [],
+            created_at: new Date('2024-03-20').toISOString()
+          },
+          {
+            id: 3,
+            project_name: "Élevage Yangambi",
+            description: "Développement de l'élevage bovin avec amélioration génétique",
+            address: "Yangambi",
+            status: "En cours",
+            sector: "Élevage",
+            project_images: [],
+            created_at: new Date('2024-02-10').toISOString()
+          },
+          {
+            id: 4,
+            project_name: "Transport Matériaux Kinshasa",
+            description: "Service de transport spécialisé pour matériaux de construction",
+            address: "Kinshasa",
+            status: "Actif",
+            sector: "Transport",
+            project_images: [],
+            created_at: new Date('2024-04-05').toISOString()
+          },
+          {
+            id: 5,
+            project_name: "Résidence Moderne Gombe",
+            description: "Construction de résidence haut standing avec équipements modernes",
+            address: "Gombe, Kinshasa",
+            status: "En cours",
+            sector: "Construction",
+            project_images: [],
+            created_at: new Date('2024-05-15').toISOString()
+          },
+          {
+            id: 6,
+            project_name: "Ferme Intégrée Bandundu",
+            description: "Développement d'une ferme intégrée avec cultures diversifiées",
+            address: "Bandundu",
+            status: "Planifié",
+            sector: "Agriculture",
+            project_images: [],
+            created_at: new Date('2024-06-01').toISOString()
+          }
+        ];
+        
+        res.writeHead(200);
+        res.end(JSON.stringify(projectsData));
+        return;
+      }
+      
+      if (req.method === 'POST') {
+        const body = await parseBody(req);
+        console.log('Project creation:', body);
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, message: 'Projet ajouté avec succès!' }));
+        return;
+      }
+    }
+    
     // 404 for unknown API routes
     res.writeHead(404);
     res.end(JSON.stringify({ error: 'API endpoint not found' }));

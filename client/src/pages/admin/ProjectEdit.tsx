@@ -91,7 +91,7 @@ export default function ProjectEdit() {
   useEffect(() => {
     if (!projectId) return;
     setLoading(true);
-    fetch(`${API}/api/projects/${projectId}`)
+    fetch(`/api/projects/${projectId}`)
       .then(async res => {
         if (!res.ok) throw new Error("Projet introuvable");
         return res.json();
@@ -116,7 +116,7 @@ export default function ProjectEdit() {
     setError(null);
     setSuccess(null);
     try {
-      const res = await fetch(`${API}/api/projects/${projectId}`, {
+      const res = await fetch(`/api/projects/${projectId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

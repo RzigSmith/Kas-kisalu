@@ -83,7 +83,7 @@ function DashboardMain() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${API}/api/admin/stats`)
+    fetch("/api/admin/stats")
       .then(async res => {
         if (!res.ok) {
           const text = await res.text();

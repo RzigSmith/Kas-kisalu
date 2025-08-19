@@ -136,8 +136,8 @@ export default function Construction() {
   useEffect(() => {
     async function fetchProjects() {
       try {
-        // Utilise l'URL complète si besoin (remplace par ton API si différent)
-        const res = await fetch("http://0.0.0.0:5000/projects");
+        // Utilise l'API proxy de Vite pour la cohérence
+        const res = await fetch("/projects");
         if (!res.ok) throw new Error("Erreur serveur");
         const data = await res.json();
         // Filtre sur sector = "Construction"

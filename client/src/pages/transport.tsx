@@ -14,7 +14,7 @@ export default function Transport() {
   useEffect(() => {
     async function fetchProjects() {
       try {
-        const res = await fetch("http://0.0.0.0:5000/projects");
+        const res = await fetch("/projects");
         if (!res.ok) throw new Error("Erreur serveur");
         const data = await res.json();
         const filtered = data.filter((p: any) => p.sector === "Transport");
