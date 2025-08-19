@@ -332,7 +332,7 @@ export default function Construction() {
                           <ImageCarousel
                             images={project.project_images.map((img: string) =>
                               img.startsWith("/uploads/")
-                                ? `http://0.0.0.0:5000${img.replace(/\\/g, "/")}`
+                                ? img.replace(/\\/g, "/")
                                 : img
                             )}
                             title={project.project_name}
@@ -343,7 +343,7 @@ export default function Construction() {
                             style={{
                               backgroundImage: `url(${
                                 project.project_images[0].startsWith("/uploads/")
-                                  ? `http://0.0.0.0:5000${project.project_images[0].replace(/\\/g, "/")}`
+                                  ? project.project_images[0].replace(/\\/g, "/")
                                   : project.project_images[0]
                               })`
                             }}
