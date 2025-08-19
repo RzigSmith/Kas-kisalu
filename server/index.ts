@@ -496,7 +496,7 @@ app.use("/uploads", express.static(path.resolve(__dirname, "uploads")));
     serveStatic(app);
   }
 
-  const port = parseInt(process.env.PORT || "5000", 10);
+  const port = parseInt(process.env.PORT || "2000", 10);
   app.listen(port, "0.0.0.0", () => {
     log(`Server running on http://0.0.0.0:${port}`);
   });
