@@ -8,7 +8,7 @@ const session = require('express-session');
 
 const app = express();
 app.use(cors({
-  origin: 'http://0.0.0.0:2000', // adapte selon ton frontend
+  origin: 'http://127.0.0.1:2000', // adapte selon ton frontend
   credentials: true
 }));
 app.use(express.json());

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, LogOut } from "lucide-react";
@@ -8,6 +8,20 @@ import logo from "@/assets/logo.jpg"; // Assure-toi que le fichier existe
 export function Header() {
   const [location] = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // Vérifie la présence du token (ajuste selon ton stockage)
+    setIsAuthenticated(
+      !!(localStorage.getItem("token") || sessionStorage.getItem("token"))
+    );
+  }, [location]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+    window.location.href = "/";
+  };
 
   const navigationItems = [
     { href: "/", label: "Accueil" },
@@ -28,7 +42,6 @@ export function Header() {
             <div className="flex items-center">
               <Link href="/">
                 <div className="flex items-center space-x-3 cursor-pointer">
-                  {/* Place le fichier image dans client/public/attached_assets/logo-kas-kisalu.jpg */}
                   <img src={logo} alt="Kas Kisalu Logo" className="h-10 w-10 rounded-full object-cover" />
                   <h1 className="text-2xl font-bold text-primary">
                     Kas Kisalu
@@ -39,19 +52,41 @@ export function Header() {
 
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
-                {navigationItems.map((item) => (
-                  <Link key={item.href} href={item.href}>
-                    <span
-                      className={`px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${
-                        location === item.href
-                          ? `text-${item.color || "primary"}`
-                          : `text-gray-700 hover:text-${item.color || "primary"}`
-                      }`}
+                {navigationItems.map((item) =>
+                  item.label === "Connexion" && isAuthenticated ? (
+                    <button
+                      key="logout"
+                      onClick={handleLogout}
+                      className="px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:text-red-800 transition-colors"
                     >
-                      {item.label}
-                    </span>
-                  </Link>
-                ))}
+                      Déconnexion
+                    </button>
+                  ) : item.label === "Connexion" ? (
+                    <Link key={item.href} href={item.href}>
+                      <span
+                        className={`px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${
+                          location === item.href
+                            ? `text-${item.color || "primary"}`
+                            : `text-gray-700 hover:text-${item.color || "primary"}`
+                        }`}
+                      >
+                        {item.label}
+                      </span>
+                    </Link>
+                  ) : (
+                    <Link key={item.href} href={item.href}>
+                      <span
+                        className={`px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${
+                          location === item.href
+                            ? `text-${item.color || "primary"}`
+                            : `text-gray-700 hover:text-${item.color || "primary"}`
+                        }`}
+                      >
+                        {item.label}
+                      </span>
+                    </Link>
+                  )
+                )}
                 <Link href="/contact">
                   <Button className="bg-primary text-white hover:bg-blue-700">
                     Contact
@@ -81,8 +116,9 @@ export function Header() {
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         navigationItems={navigationItems}
+        isAuthenticated={isAuthenticated}
+        handleLogout={handleLogout}
       />
     </>
   );
 }
-     

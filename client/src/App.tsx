@@ -18,6 +18,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/admin/dashboard";
 import ProjectForm from "./pages/admin/ProjectForm";
 import SiteManagement from "./pages/admin/SiteManagement";
+import ProjectEdit from "./pages/admin/ProjectEdit";
 
 function Router() {
   return (
@@ -36,6 +37,10 @@ function Router() {
       <Route path="/admin/dashboard" component={Dashboard} />
       <Route path="/admin/project-form" component={ProjectForm} />
       <Route path="/admin/site-management" component={SiteManagement} />
+      <Route path="/admin/project-edit/:id" component={ProjectEdit} />
+      <Route path="/admin/projects-realised" component={Dashboard} />
+      <Route path="/admin/project-edit" component={ProjectEdit} />
+      <Route path="/upload" component={ProjectEdit} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -54,4 +59,3 @@ function App() {
 
 export default App;
 
-// Si tu utilises API ici, remplace la valeur comme ci-dessus

@@ -19,6 +19,11 @@ export default function Login() {
       });
       const data = await res.json();
       if (data.success) {
+        // Stocke le token pour la session utilisateur
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+          sessionStorage.setItem("token", data.token);
+        }
         if (data.user?.role === "admin") {
           setLocation("/admin/dashboard");
         } else {

@@ -88,9 +88,10 @@ app.use((req, res, next) => {
 });
 
 // Multer configuration pour upload d'images
-const uploadDir = path.join(__dirname, "uploads");
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
+const uploadDir = path.resolve(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
+// Multer storage: assure que les fichiers vont dans server/uploads
 const multerStorage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadDir),
   filename: (_req, file, cb) => {
@@ -333,7 +334,11 @@ app.post("/projects", upload.array("project_images", 30), async (req: Request, r
     if (!project_name || !description || !status || !sector) {
       return res.status(400).json({ message: "Champs requis manquants" });
     }
-    const images = req.files ? (req.files as Express.Multer.File[]).map(f => "/uploads/" + path.basename(f.path)) : [];
+    // Les fichiers sont uploadés dans server/uploads grâce à multerStorage
+    // On stocke le chemin relatif pour l'accès public
+    const images = req.files
+      ? (req.files as Express.Multer.File[]).map(f => "/uploads/" + path.basename(f.path))
+      : [];
     const insertData = {
       project_name,
       description,
@@ -400,8 +405,8 @@ app.delete("/projects/:id", async (req: Request, res: Response) => {
   }
 });
 
-// Sert les images uploadées
-app.use("/uploads", express.static(uploadDir));
+// Sert les images uploadées depuis le dossier uploads à la racine du projet server
+app.use("/uploads", express.static(path.resolve(__dirname, "uploads")));
 
 (async () => {
   // Vérifie et crée la table users si elle n'existe pas
@@ -491,7 +496,7 @@ app.use("/uploads", express.static(uploadDir));
     serveStatic(app);
   }
 
-  const port = parseInt(process.env.PORT || "2000", 10);
+  const port = parseInt(process.env.PORT || "5000", 10);
   app.listen(port, "0.0.0.0", () => {
     log(`Server running on http://0.0.0.0:${port}`);
   });

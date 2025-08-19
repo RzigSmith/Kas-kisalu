@@ -1,7 +1,7 @@
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { ShoppingCart } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // Import des images soldMat
 const soldMatGlob = import.meta.glob('@/assets/soldMat*.{jpg,jpeg,png,webp}', { eager: true });
@@ -119,6 +119,36 @@ function ImageCarousel({ images, title }: { images: string[]; title: string }) {
 }
 
 export default function VentesMateriaux() {
+  // Ajout récupération projets secteur Ventes de matériaux
+  const [dbProjects, setDbProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        const res = await fetch("http://0.0.0.0:5000/projects");
+        if (!res.ok) throw new Error("Erreur serveur");
+        const data = await res.json();
+        const filtered = data.filter((p: any) => p.sector === "Ventes de matériaux");
+        const parsed = filtered.map((p: any) => ({
+          ...p,
+          project_images: typeof p.project_images === "string"
+            ? JSON.parse(p.project_images)
+            : Array.isArray(p.project_images)
+              ? p.project_images
+              : []
+        }));
+        setDbProjects(parsed);
+        setLoading(false);
+      } catch (err: any) {
+        setError(err.message || "Erreur lors de la récupération des projets");
+        setLoading(false);
+      }
+    }
+    fetchProjects();
+  }, []);
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -157,6 +187,47 @@ export default function VentesMateriaux() {
                   <li>Particuliers et professionnels</li>
                 </ul>
               </div>
+            </div>
+            {/* Projects Gallery - Ventes de matériaux */}
+            <div className="mb-16">
+              <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
+                Projets de ventes de matériaux
+              </h2>
+              {loading ? (
+                <div className="text-center text-gray-500 py-8">Chargement des projets...</div>
+              ) : error ? (
+                <div className="text-center text-red-500 py-8">{error}</div>
+              ) : dbProjects.length === 0 ? (
+                <div className="text-center text-gray-500 py-8">Aucun projet trouvé.</div>
+              ) : (
+                <div className="grid md:grid-cols-3 gap-6">
+                  {dbProjects.map((project: any, idx: number) => (
+                    <div key={idx} className="overflow-hidden rounded-lg shadow-lg bg-white">
+                      {project.project_images && project.project_images.length > 0 ? (
+                        <div
+                          className="h-48 bg-cover bg-center"
+                          style={{
+                            backgroundImage: `url(${
+                              project.project_images[0].startsWith("uploads/")
+                                ? `${window.location.origin}/${project.project_images[0].replace(/\\/g, "/")}`
+                                : project.project_images[0]
+                            })`
+                          }}
+                          title={project.project_name}
+                        ></div>
+                      ) : null}
+                      <div className="p-6">
+                        <h3 className="font-bold text-gray-900 mb-2">{project.project_name}</h3>
+                        <p className="text-gray-700 mb-1">{project.description}</p>
+                        {project.address && (
+                          <p className="text-gray-500 text-sm mb-1">{project.address}</p>
+                        )}
+                        <p className="text-gray-500 text-sm">{project.status}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="mt-12 text-center">
               <a

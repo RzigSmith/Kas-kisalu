@@ -1,5 +1,42 @@
 import { useState, FormEvent } from "react";
+import { Link, useLocation } from "wouter";
+import { FaChartBar, FaProjectDiagram, FaPlusCircle, FaCog } from "react-icons/fa";
+import "./dashboard.css";
 
+// Sidebar identique à dashboard
+function Sidebar() {
+  const [location] = useLocation();
+  return (
+    <nav className="dashboard-sidebar">
+      <ul>
+        <li className={location === "/admin/dashboard" ? "active" : ""}>
+          <Link href="/admin/dashboard">
+            <FaChartBar style={{ marginRight: 8 }} />
+            Dashboard
+          </Link>
+        </li>
+        <li className={location === "/admin/projects-realised" ? "active" : ""}>
+          <Link href="/admin/projects-realised">
+            <FaProjectDiagram style={{ marginRight: 8 }} />
+            Projets réalisés
+          </Link>
+        </li>
+        <li className={location === "/admin/project-form" ? "active" : ""}>
+          <Link href="/admin/project-form">
+            <FaPlusCircle style={{ marginRight: 8 }} />
+            Ajouter un projet
+          </Link>
+        </li>
+        <li className={location === "/admin/site-management" ? "active" : ""}>
+          <Link href="/admin/site-management">
+            <FaCog style={{ marginRight: 8 }} />
+            Gestion du site
+          </Link>
+        </li>
+      </ul>
+    </nav>
+  );
+}
 
 export default function ProjectForm() {
   const [project_name, setProjectName] = useState("");
@@ -59,79 +96,96 @@ export default function ProjectForm() {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+    window.location.href = "/";
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-lg mx-auto bg-white p-6 rounded shadow">
-      <h2 className="text-xl font-bold mb-2">Ajouter un projet</h2>
-      <input
-        title="Nom du projet"
-        type="text"
-        placeholder="Nom du projet"
-        value={project_name}
-        onChange={e => setProjectName(e.target.value)}
-        className="w-full border px-3 py-2 rounded"
-        required
-      />
-      <input
-        title="Description"
-        type="text"
-        placeholder="Description du projet"
-        value={description}
-        onChange={e => setDescription(e.target.value)}
-        className="w-full border px-3 py-2 rounded"
-        required
-      />
-      <input
-        title="Adresse"
-        type="text"
-        placeholder="Adresse"
-        value={address}
-        onChange={e => setAddress(e.target.value)}
-        className="w-full border px-3 py-2 rounded"
-      />
-      <select
-        title="Statut"
-        value={status}
-        onChange={e => setStatus(e.target.value)}
-        className="w-full border px-3 py-2 rounded"
-        required
-      >
-        <option value="">Statut</option>
-        <option value="En cours">En cours</option>
-        <option value="Terminé">Terminé</option>
-        <option value="Suspendu">Suspendu</option>
-      </select>
-    
-      <input
-        id="project-images-input"
-        type="file"
-        multiple
-        accept="image/*"
-        onChange={e => setProjectImages(e.target.files)}
-        className="w-full"
-      />
-        <select
-        title="Secteur"
-        value={sector}
-        onChange={e => setSector(e.target.value)}
-        className="w-full border px-3 py-2 rounded"
-        required
-      >
-        <option value="">Secteur</option>
-        <option value="Construction">Construction</option>
-        <option value="Élevage">Élevage</option>
-        <option value="Transport">Transport</option>
-        <option value="Agriculture">Agriculture</option>
-        <option value="Immobilier">Immobilier</option>
-        <option value="Ventes de matériaux">Ventes de matériaux</option>
-      </select>
-      {success && <div className="text-green-600">{success}</div>}
-      {error && <div className="text-red-600">{error}</div>}
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-      >
-        Ajouter
-      </button>
-    </form>
+    <div className="dashboard-layout">
+      <Sidebar />
+      <div className="dashboard-content">
+        <div className="dashboard-header" style={{ marginBottom: "1rem", textAlign: "right" }}>
+          <button className="dashboard-logout-btn" onClick={handleLogout}>
+            Déconnexion
+          </button>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4 max-w-lg mx-auto bg-white p-6 rounded shadow">
+          <h2 className="text-xl font-bold mb-2">Ajouter un projet</h2>
+          <input
+            title="Nom du projet"
+            type="text"
+            placeholder="Nom du projet"
+            value={project_name}
+            onChange={e => setProjectName(e.target.value)}
+            className="w-full border px-3 py-2 rounded"
+            required
+          />
+          <input
+            title="Description"
+            type="text"
+            placeholder="Description du projet"
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+            className="w-full border px-3 py-2 rounded"
+            required
+          />
+          <input
+            title="Adresse"
+            type="text"
+            placeholder="Adresse"
+            value={address}
+            onChange={e => setAddress(e.target.value)}
+            className="w-full border px-3 py-2 rounded"
+          />
+          <select
+            title="Statut"
+            value={status}
+            onChange={e => setStatus(e.target.value)}
+            className="w-full border px-3 py-2 rounded"
+            required
+          >
+            <option value="">Statut</option>
+            <option value="En cours">En cours</option>
+            <option value="Terminé">Terminé</option>
+            <option value="Suspendu">Suspendu</option>
+          </select>
+        
+          <input
+            id="project-images-input"
+            type="file"
+            multiple
+            accept="image/*"
+            placeholder="Sélectionnez des images"
+            onChange={e => setProjectImages(e.target.files)}
+            className="w-full"
+          />
+            <select
+            title="Secteur"
+            value={sector}
+            onChange={e => setSector(e.target.value)}
+            className="w-full border px-3 py-2 rounded"
+            required
+          >
+            <option value="">Secteur</option>
+            <option value="Construction">Construction</option>
+            <option value="Élevage">Élevage</option>
+            <option value="Transport">Transport</option>
+            <option value="Agriculture">Agriculture</option>
+            <option value="Immobilier">Immobilier</option>
+            <option value="Ventes de matériaux">Ventes de matériaux</option>
+          </select>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          >
+            Ajouter
+          </button>
+          {success && <div className="text-green-600">{success}</div>}
+          {error && <div className="text-red-600">{error}</div>}
+        </form>
+      </div>
+    </div>
   );
 }

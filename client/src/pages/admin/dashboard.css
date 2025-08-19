@@ -198,9 +198,8 @@
 .dashboard-layout {
   display: flex;
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f6fa 60%, #e3eafc 100%);
+  background: #f7f8fa;
 }
-
 .dashboard-sidebar {
   width: 220px;
   background: linear-gradient(120deg, #1976d2 80%, #43a047 100%);
@@ -210,18 +209,20 @@
   box-shadow: 2px 0 8px rgba(25, 118, 210, 0.08);
   border-top-right-radius: 16px;
   border-bottom-right-radius: 16px;
+  position: relative;
+  transition: left 0.2s;
 }
-
+.dashboard-sidebar .sidebar-toggle {
+  display: none;
+}
 .dashboard-sidebar ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
 .dashboard-sidebar li {
   margin: 20px 0;
 }
-
 .dashboard-sidebar a, .dashboard-sidebar .wouter-link {
   color: #fff;
   text-decoration: none;
@@ -233,30 +234,161 @@
   transition: background 0.2s, color 0.2s;
   letter-spacing: 0.5px;
 }
+.dashboard-sidebar li.active a {
+  background: #fff;
+  color: #1976d2;
+}
 .dashboard-sidebar a:hover, .dashboard-sidebar .wouter-link:hover {
   background: #1565c0;
   color: #e3eafc;
 }
-
 .dashboard-content {
   flex: 1;
   padding: 40px 32px;
+  min-width: 0;
+  position: relative;
 }
-
-.dashboard-content h1 {
-  margin-top: 0;
+.sidebar-toggle.floating {
+  display: none;
 }
-
-.dashboard-content ul {
-  padding-left: 20px;
+@media (max-width: 900px) {
+  .dashboard-layout {
+    flex-direction: column;
+  }
+  .dashboard-sidebar {
+    position: fixed;
+    left: -220px;
+    top: 0;
+    height: 100vh;
+    z-index: 100;
+    transition: left 0.2s;
+  }
+  .dashboard-sidebar.open {
+    left: 0;
+  }
+  .dashboard-sidebar .sidebar-toggle {
+    display: block;
+    position: absolute;
+    top: 18px;
+    right: -48px;
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    font-size: 2rem;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+  }
+  .dashboard-content {
+    padding: 24px 8px;
+  }
+  .sidebar-toggle.floating {
+    display: block;
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    z-index: 101;
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    font-size: 2rem;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+  }
 }
-
-.dashboard-content li {
-  margin-bottom: 18px;
+.dashboard-responsive-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
-
-.dashboard-content img {
-  margin-top: 8px;
+.dashboard-cards-row {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.dashboard-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1.5rem 2rem;
+  min-width: 200px;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.08);
+  border: 1px solid #e0e0e0;
+  transition: box-shadow 0.2s, transform 0.2s;
+  margin-bottom: 1rem;
+}
+.dashboard-card:hover {
+  box-shadow: 0 8px 24px rgba(25, 118, 210, 0.15);
+  transform: translateY(-4px) scale(1.03);
+}
+.dashboard-card-title {
+  color: #888;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+.dashboard-card-value {
+  font-size: 2.1rem;
+  font-weight: bold;
+  color: #1976d2;
+  margin-bottom: 0.5rem;
+  letter-spacing: 1px;
+}
+.dashboard-card-icon {
+  margin-bottom: 0.5rem;
+}
+.dashboard-graphs-row {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.dashboard-graph-card, .dashboard-list-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1.5rem 2rem;
+  min-width: 320px;
+  flex: 1 1 320px;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.05);
+  border: 1px solid #e0e0e0;
+  margin-bottom: 2rem;
+}
+.dashboard-graph-card h3, .dashboard-list-card h3 {
+  color: #1976d2;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.dashboard-list-card ul {
+  padding-left: 0;
+  list-style: none;
+}
+.dashboard-list-card li {
+  margin-bottom: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+.dashboard-list-card li:last-child {
+  border-bottom: none;
+}
+.dashboard-error {
+  color: #d32f2f;
+  text-align: center;
+  margin: 2rem;
+  font-size: 1.2rem;
+  background: #ffeaea;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+  padding: 1rem;
+}
+.dashboard-loading {
+  text-align: center;
+  margin: 2rem;
+  font-size: 1.3rem;
+  color: #1976d2;
 }
