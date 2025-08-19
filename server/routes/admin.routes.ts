@@ -17,14 +17,18 @@ router.get("/projects", (_req: Request, res: Response) => {
 router.get("/stats", async (_req, res) => {
   try {
     const projectsList = await db.select().from(projects);
-    const usersList = await db.select().from(users);
+    // Compter les utilisateurs depuis la bonne table
+    const usersCount = await db.execute(`SELECT COUNT(*) as count FROM users`);
+    const contactMessagesCount = await db.execute(`SELECT COUNT(*) as count FROM contact_messages`);
+    
     res.json({
       totalProjects: projectsList.length,
-      totalUsers: usersList.length,
-      projects: projectsList,
-      users: usersList
+      totalUsers: parseInt(usersCount.rows[0]?.count as string || '0'),
+      totalMessages: parseInt(contactMessagesCount.rows[0]?.count as string || '0'),
+      projects: projectsList
     });
   } catch (err: any) {
+    console.error('Erreur stats admin:', err);
     res.status(500).json({ message: err.message || "Erreur serveur" });
   }
 });

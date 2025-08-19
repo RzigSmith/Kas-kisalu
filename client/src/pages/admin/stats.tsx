@@ -36,8 +36,8 @@ export default function Stats() {
   useEffect(() => {
     setLoading(true);
     Promise.all([
-      fetch("/projects").then(res => res.json()),
-      fetch("/admin/stats").then(res => res.json()).catch(() => ({ totalUsers: 0, totalMessages: 0 }))
+      fetch("/api/projects").then(res => res.json()),
+      fetch("/api/admin/stats").then(res => res.json()).catch(() => ({ totalUsers: 0, totalMessages: 0 }))
     ])
       .then(([projects, adminStats]) => {
         // Calcul des statistiques par secteur

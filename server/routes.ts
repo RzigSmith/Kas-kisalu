@@ -77,6 +77,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Admin routes
   app.use("/admin", requireAdminAuth, adminRoutes);
+  app.use("/api/admin", requireAdminAuth, adminRoutes);
 
   const httpServer = createServer(app);
   return httpServer;
