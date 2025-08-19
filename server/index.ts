@@ -316,14 +316,33 @@ app.use("/api/realisations", realisationRoutes);
 // GET /projects : liste tous les projets
 app.get("/projects", async (_req, res) => {
   const rows = await db.select().from(projects);
-  const data = rows.map(row => ({
-    ...row,
-    project_images: typeof row.project_images === "string"
+  const data = rows.map(row => {
+    let images = typeof row.project_images === "string"
       ? JSON.parse(row.project_images)
       : Array.isArray(row.project_images)
         ? row.project_images
-        : []
-  }));
+        : [];
+    
+    // Normalise les chemins d'images pour qu'ils commencent tous par /uploads/
+    images = images.map((img: string) => {
+      // Remplace les backslashes par des slashes
+      let normalizedPath = img.replace(/\\/g, "/");
+      // Assure que le chemin commence par /uploads/
+      if (!normalizedPath.startsWith("/uploads/")) {
+        if (normalizedPath.startsWith("uploads/")) {
+          normalizedPath = "/" + normalizedPath;
+        } else {
+          normalizedPath = "/uploads/" + normalizedPath.replace(/^\/+/, "");
+        }
+      }
+      return normalizedPath;
+    });
+
+    return {
+      ...row,
+      project_images: images
+    };
+  });
   res.json(data);
 });
 

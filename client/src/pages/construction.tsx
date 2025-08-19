@@ -111,12 +111,70 @@ const projects = [
 // Carousel component (minimal, no external lib)
 function ImageCarousel({ images, title }: { images: string[]; title: string }) {
   const [index, setIndex] = useState(0);
+  const [loadedImages, setLoadedImages] = useState<boolean[]>([]);
+  
+  useEffect(() => {
+    if (images && images.length > 0) {
+      // Vérifier quelles images se chargent correctement
+      const checkImages = images.map((src, i) => {
+        return new Promise<boolean>((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve(true);
+          img.onerror = () => resolve(false);
+          img.src = src;
+        });
+      });
+      
+      Promise.all(checkImages).then(results => {
+        setLoadedImages(results);
+        // Si l'image actuelle ne se charge pas, passer à la première qui se charge
+        if (!results[index]) {
+          const firstLoaded = results.findIndex(loaded => loaded);
+          if (firstLoaded !== -1) {
+            setIndex(firstLoaded);
+          }
+        }
+      });
+    }
+  }, [images, index]);
+
   if (!images || images.length === 0) return null;
+  
+  // Filtrer pour ne montrer que les images qui se chargent
+  const validImages = images.filter((_, i) => loadedImages[i]);
+  if (validImages.length === 0 && loadedImages.length > 0) {
+    return (
+      <div className={styles.carouselContainer}>
+        <div className={styles.carouselImage} style={{ 
+          backgroundColor: '#f3f4f6', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          color: '#6b7280'
+        }}>
+          Image non disponible
+        </div>
+      </div>
+    );
+  }
+  
   const prev = () => setIndex((i) => (i === 0 ? images.length - 1 : i - 1));
   const next = () => setIndex((i) => (i === images.length - 1 ? 0 : i + 1));
+  
   return (
     <div className={styles.carouselContainer}>
-      <div className={styles.carouselImage} style={{ backgroundImage: `url(${images[index]})` }} title={title}></div>
+      <div 
+        className={styles.carouselImage} 
+        style={{ backgroundImage: `url(${images[index]})` }} 
+        title={title}
+        onError={(e) => {
+          // Si l'image échoue à charger, passer à la suivante
+          const nextValidIndex = images.findIndex((_, i) => i > index && loadedImages[i]);
+          if (nextValidIndex !== -1) {
+            setIndex(nextValidIndex);
+          }
+        }}
+      ></div>
       {images.length > 1 && (
         <div className={styles.carouselControls}>
           <button onClick={prev} className={styles.carouselBtn} aria-label="Précédent">‹</button>
