@@ -195,7 +195,7 @@ export default function Construction() {
     async function fetchProjects() {
       try {
         // Utilise l'API proxy de Vite pour la cohérence
-        const res = await fetch("/projects");
+        const res = await fetch("/api/projects");
         if (!res.ok) throw new Error("Erreur serveur");
         const data = await res.json();
         // Filtre sur sector = "Construction"

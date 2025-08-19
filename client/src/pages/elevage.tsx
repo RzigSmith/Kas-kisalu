@@ -14,7 +14,7 @@ export default function Elevage() {
   useEffect(() => {
     async function fetchProjects() {
       try {
-        const res = await fetch("/projects");
+        const res = await fetch("/api/projects");
         if (!res.ok) throw new Error("Erreur serveur");
         const data = await res.json();
         const filtered = data.filter((p: any) => p.sector === "Élevage");
@@ -127,18 +127,22 @@ export default function Elevage() {
                     >
                       {project.project_images &&
                       project.project_images.length > 0 ? (
-                        <div
-                          className="h-48 bg-cover bg-center"
-                          style={{
-                            backgroundImage: `url(${
-                              project.project_images[0].startsWith("/uploads/")
-                                ? project.project_images[0].replace(/\\/g, "/")
-                                : project.project_images[0]
-                            })`,
-                          }}
-                          title={project.project_name}
-                        ></div>
-                      ) : null}
+                        <div className="h-48 bg-gray-200 overflow-hidden">
+                          <img
+                            src={project.project_images[0]}
+                            alt={project.project_name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              console.error('Erreur chargement image:', project.project_images[0]);
+                              e.currentTarget.src = '/api/placeholder.jpg';
+                            }}
+                          />
+                        </div>
+                      ) : (
+                        <div className="h-48 bg-gray-200 flex items-center justify-center">
+                          <span className="text-gray-500">Aucune image</span>
+                        </div>
+                      )}
                       <CardContent className="p-6">
                         <h3 className="font-bold text-gray-900 mb-2">
                           {project.project_name}
