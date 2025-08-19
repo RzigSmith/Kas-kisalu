@@ -87,11 +87,11 @@ app.use((req, res, next) => {
   next();
 });
 
-// Multer configuration pour upload d'images
-const uploadDir = path.resolve(__dirname, "uploads");
+// Multer configuration pour upload d'images - pointe vers le dossier uploads à la racine
+const uploadDir = path.resolve(__dirname, "..", "uploads");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
-// Multer storage: assure que les fichiers vont dans server/uploads
+// Multer storage: assure que les fichiers vont dans le dossier uploads à la racine
 const multerStorage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadDir),
   filename: (_req, file, cb) => {
@@ -373,7 +373,7 @@ app.put("/projects/:id", upload.array("project_images", 30), async (req: Request
         ? JSON.parse(oldRows[0].project_images)
         : [];
       oldImages.forEach((imgPath: string) => {
-        const absPath = path.join(__dirname, imgPath.replace(/^\/uploads\//, "uploads/"));
+        const absPath = path.join(__dirname, "..", imgPath.replace(/^\/uploads\//, "uploads/"));
         if (fs.existsSync(absPath)) fs.unlinkSync(absPath);
       });
       updateData.project_images = JSON.stringify(images); // stocke comme string JSON
@@ -395,7 +395,7 @@ app.delete("/projects/:id", async (req: Request, res: Response) => {
       ? JSON.parse(rows[0].project_images)
       : [];
     images.forEach((imgPath: string) => {
-      const absPath = path.join(__dirname, imgPath.replace(/^\/uploads\//, "uploads/"));
+      const absPath = path.join(__dirname, "..", imgPath.replace(/^\/uploads\//, "uploads/"));
       if (fs.existsSync(absPath)) fs.unlinkSync(absPath);
     });
     await db.delete(projects).where(eq(projects.id, id));
@@ -405,8 +405,8 @@ app.delete("/projects/:id", async (req: Request, res: Response) => {
   }
 });
 
-// Sert les images uploadées depuis le dossier uploads à la racine du projet server
-app.use("/uploads", express.static(path.resolve(__dirname, "uploads")));
+// Sert les images uploadées depuis le dossier uploads à la racine du projet
+app.use("/uploads", express.static(path.resolve(__dirname, "..", "uploads")));
 
 (async () => {
   // Vérifie et crée la table users si elle n'existe pas
