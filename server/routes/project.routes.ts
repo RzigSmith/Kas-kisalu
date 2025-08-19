@@ -91,9 +91,11 @@ router.get("/:id", async (req, res) => {
 });
 
 // Route PUT pour mettre à jour un projet
-router.put("/:id", upload.array("project_images", 10), async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
+    
+    console.log("PUT /projects/:id - Body reçu:", req.body);
     
     // Récupérer les données du body
     const body = req.body as {
@@ -105,32 +107,23 @@ router.put("/:id", upload.array("project_images", 10), async (req, res) => {
       project_images?: string[];
     };
 
-    // Gérer les nouvelles images uploadées
-    let newImages: string[] = [];
-    if (req.files) {
-      newImages = (req.files as Express.Multer.File[]).map(f => 
-        f.path.replace(/\\/g, '/').replace(/.*\/uploads\//, '')
-      );
-    }
-
-    // Combiner les images existantes avec les nouvelles
-    let allImages = body.project_images || [];
-    if (newImages.length > 0) {
-      allImages = [...allImages, ...newImages];
+    if (!body.project_name || !body.sector) {
+      return res.status(400).json({ message: "Nom du projet et secteur requis" });
     }
 
     // Mettre à jour le projet
     await db.update(projects)
       .set({
         project_name: body.project_name,
-        description: body.description,
-        address: body.address,
-        status: body.status,
+        description: body.description || undefined,
+        address: body.address || undefined,
+        status: body.status || undefined,
         sector: body.sector,
-        project_images: JSON.stringify(allImages)
+        project_images: JSON.stringify(body.project_images || [])
       })
       .where(eq(projects.id, id));
 
+    console.log("Projet mis à jour avec succès:", id);
     res.json({ success: true, message: "Projet mis à jour avec succès" });
   } catch (err: any) {
     console.error("Erreur lors de la mise à jour du projet:", err);

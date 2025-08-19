@@ -47,15 +47,32 @@ export default function ProjectEdit() {
         return res.json();
       })
       .then(data => {
+        console.log("Données du projet reçues:", data);
         setProjectName(data.project_name ?? "");
         setDescription(data.description ?? "");
         setAddress(data.address ?? "");
         setStatus(data.status ?? "");
         setSector(data.sector ?? "");
-        setProjectImages(Array.isArray(data.project_images) ? data.project_images : []);
+        
+        // Gérer les images - elles peuvent être string JSON ou array
+        let images = [];
+        if (data.project_images) {
+          if (typeof data.project_images === 'string') {
+            try {
+              images = JSON.parse(data.project_images);
+            } catch (e) {
+              console.error("Erreur parsing images:", e);
+              images = [];
+            }
+          } else if (Array.isArray(data.project_images)) {
+            images = data.project_images;
+          }
+        }
+        setProjectImages(Array.isArray(images) ? images : []);
         setLoading(false);
       })
       .catch(err => {
+        console.error("Erreur chargement projet:", err);
         setError(err.message);
         setLoading(false);
       });
@@ -283,14 +300,14 @@ export default function ProjectEdit() {
                     {projectImages.map((imagePath, index) => (
                       <div key={index} className="relative group">
                         <img
-                          src={`/uploads/${imagePath}`}
+                          src={imagePath.startsWith('/uploads/') ? imagePath : `/uploads/${imagePath}`}
                           alt={`Image ${index + 1}`}
                           className="w-full h-32 object-cover rounded-lg border"
                           onError={(e) => {
-                            // Si l'image ne se charge pas avec /uploads/, essayer le chemin direct
+                            // Si l'image ne se charge pas, essayer sans préfixe
                             const target = e.target as HTMLImageElement;
                             if (target.src.includes('/uploads/')) {
-                              target.src = imagePath;
+                              target.src = imagePath.replace('/uploads/', '');
                             }
                           }}
                         />
