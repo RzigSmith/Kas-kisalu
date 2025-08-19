@@ -31,7 +31,7 @@ export function Header() {
     { href: "/transport", label: "Transport", color: "transport" },
     { href: "/ventes-materiaux", label: "Ventes de Matériaux", color: "ventes-materiaux" },
     { href: "/immobilier", label: "Immobilier", color: "immobilier" },
-    { href: "/login", label: "Connexion", color: "login" },
+
   ];
 
   return (
@@ -52,46 +52,38 @@ export function Header() {
 
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
-                {navigationItems.map((item) =>
-                  item.label === "Connexion" && isAuthenticated ? (
-                    <button
-                      key="logout"
-                      onClick={handleLogout}
-                      className="px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:text-red-800 transition-colors"
+                {navigationItems.map((item) => (
+                  <Link key={item.href} href={item.href}>
+                    <span
+                      className={`px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${
+                        location === item.href
+                          ? `text-${item.color || "primary"}`
+                          : `text-gray-700 hover:text-${item.color || "primary"}`
+                      }`}
                     >
-                      Déconnexion
-                    </button>
-                  ) : item.label === "Connexion" ? (
-                    <Link key={item.href} href={item.href}>
-                      <span
-                        className={`px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${
-                          location === item.href
-                            ? `text-${item.color || "primary"}`
-                            : `text-gray-700 hover:text-${item.color || "primary"}`
-                        }`}
-                      >
-                        {item.label}
-                      </span>
-                    </Link>
-                  ) : (
-                    <Link key={item.href} href={item.href}>
-                      <span
-                        className={`px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${
-                          location === item.href
-                            ? `text-${item.color || "primary"}`
-                            : `text-gray-700 hover:text-${item.color || "primary"}`
-                        }`}
-                      >
-                        {item.label}
-                      </span>
-                    </Link>
-                  )
-                )}
+                      {item.label}
+                    </span>
+                  </Link>
+                ))}
                 <Link href="/contact">
                   <Button className="bg-primary text-white hover:bg-blue-700">
                     Contact
                   </Button>
                 </Link>
+                {isAuthenticated ? (
+                  <button
+                    onClick={handleLogout}
+                    className="px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:text-red-800 transition-colors"
+                  >
+                    Déconnexion
+                  </button>
+                ) : (
+                  <Link href="/login">
+                    <Button variant="outline" size="sm">
+                      Connexion
+                    </Button>
+                  </Link>
+                )}
               </div>
             </div>
 

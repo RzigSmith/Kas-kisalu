@@ -90,4 +90,93 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// Route PUT pour mettre à jour un projet
+router.put("/:id", upload.array("project_images", 10), async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    
+    // Récupérer les données du body
+    const body = req.body as {
+      project_name: string;
+      description: string;
+      address?: string;
+      status: string;
+      sector: string;
+      project_images?: string[];
+    };
+
+    // Gérer les nouvelles images uploadées
+    let newImages: string[] = [];
+    if (req.files) {
+      newImages = (req.files as Express.Multer.File[]).map(f => 
+        f.path.replace(/\\/g, '/').replace(/.*\/uploads\//, '')
+      );
+    }
+
+    // Combiner les images existantes avec les nouvelles
+    let allImages = body.project_images || [];
+    if (newImages.length > 0) {
+      allImages = [...allImages, ...newImages];
+    }
+
+    // Mettre à jour le projet
+    await db.update(projects)
+      .set({
+        project_name: body.project_name,
+        description: body.description,
+        address: body.address,
+        status: body.status,
+        sector: body.sector,
+        project_images: JSON.stringify(allImages)
+      })
+      .where(eq(projects.id, id));
+
+    res.json({ success: true, message: "Projet mis à jour avec succès" });
+  } catch (err: any) {
+    console.error("Erreur lors de la mise à jour du projet:", err);
+    res.status(500).json({ message: err.message || "Erreur serveur" });
+  }
+});
+
+// Route DELETE pour supprimer un projet
+router.delete("/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    
+    // Récupérer le projet pour obtenir les images à supprimer
+    const rows = await db.select().from(projects).where(eq(projects.id, id));
+    if (!rows.length) {
+      return res.status(404).json({ message: "Projet non trouvé" });
+    }
+
+    const project = rows[0];
+    
+    // Supprimer les fichiers images si ils existent
+    if (project.project_images) {
+      try {
+        const images = typeof project.project_images === 'string' 
+          ? JSON.parse(project.project_images) 
+          : project.project_images;
+        
+        for (const imagePath of images) {
+          const fullPath = path.join(pathToUploads, path.basename(imagePath));
+          if (fs.existsSync(fullPath)) {
+            fs.unlinkSync(fullPath);
+          }
+        }
+      } catch (e) {
+        console.error("Erreur lors de la suppression des images:", e);
+      }
+    }
+
+    // Supprimer le projet de la base de données
+    await db.delete(projects).where(eq(projects.id, id));
+    
+    res.json({ success: true, message: "Projet supprimé avec succès" });
+  } catch (err: any) {
+    console.error("Erreur lors de la suppression du projet:", err);
+    res.status(500).json({ message: err.message || "Erreur serveur" });
+  }
+});
+
 export default router;
