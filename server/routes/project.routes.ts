@@ -11,6 +11,41 @@ const __dirname = path.dirname(__filename);
 
 const router = Router();
 const pathToUploads = path.resolve(__dirname, "uploads"); // Dossier server/uploads
+
+// Route GET pour récupérer tous les projets
+router.get("/", async (req, res) => {
+  try {
+    const allProjects = await db.select().from(projects);
+    
+    // Parse les images JSON pour chaque projet
+    const projectsWithImages = allProjects.map(project => {
+      let images: string[] = [];
+      try {
+        if (typeof project.project_images === "string" && project.project_images) {
+          images = JSON.parse(project.project_images);
+        } else if (Array.isArray(project.project_images)) {
+          images = project.project_images;
+        }
+      } catch (e) {
+        console.error("Erreur parsing project_images pour projet", project.id, ":", e);
+        images = [];
+      }
+      
+      // S'assure que chaque image commence par /uploads/
+      images = images.map(img => img.startsWith("/uploads/") ? img : "/uploads/" + path.basename(img));
+      
+      return {
+        ...project,
+        project_images: images
+      };
+    });
+    
+    res.json(projectsWithImages);
+  } catch (err: any) {
+    console.error("Erreur lors de la récupération des projets:", err);
+    res.status(500).json({ message: err.message || "Erreur serveur" });
+  }
+});
 const upload = multer({
   storage: multer.diskStorage({
     destination: (_req, _file, cb) => {

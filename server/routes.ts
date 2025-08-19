@@ -6,6 +6,7 @@ import { insertContactMessageSchema } from "@shared/schema";
 import { z } from "zod";
 import { requireAdminAuth } from "./middlewares/auth.middleware";
 import adminRoutes from "./routes/admin.routes";
+import projectRoutes from "./routes/project.routes";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
@@ -57,6 +58,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+
+  // Projects routes
+  app.use("/api/projects", projectRoutes);
 
   // Admin routes
   app.use("/admin", requireAdminAuth, adminRoutes);
