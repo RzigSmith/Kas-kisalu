@@ -5,6 +5,9 @@ import { HardHat, Check } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import styles from "./construction.module.css";
 
+// Add this import if you are using Express and cors in this file
+import cors from "cors";
+
 // const realisationsGlob = import.meta.glob('@/assets/realisations*.{jpg,jpeg,png,webp}', { eager: true });
 // const realisationsImages: string[] = Object.values(realisationsGlob).map((mod: any) => mod.default);
 
@@ -132,12 +135,11 @@ export default function Construction() {
   const [dbProjects, setDbProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     async function fetchProjects() {
       try {
         // Utilise l'URL complète si besoin (remplace par ton API si différent)
-        const res = await fetch("http://0.0.0.0:5000/projects");
+        const res = await fetch("http://127.0.0.1:2000/projects");
         if (!res.ok) throw new Error("Erreur serveur");
         const data = await res.json();
         // Filtre sur sector = "Construction"
@@ -418,3 +420,5 @@ export default function Construction() {
     </div>
   );
 }
+
+

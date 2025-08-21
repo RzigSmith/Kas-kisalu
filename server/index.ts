@@ -46,7 +46,7 @@ app.use(session({
 }));
 
 app.use(cors({
-  origin: "http://0.0.0.0:5173", // Port du frontend (Vite)
+  origin: "http://127.0.0.1:5173", // Port du frontend (Vite)
   credentials: true
 }));
 app.use(express.json());
@@ -496,9 +496,9 @@ app.use("/uploads", express.static(path.resolve(__dirname, "uploads")));
     serveStatic(app);
   }
 
-  const port = parseInt(process.env.PORT || "5000", 10);
-  app.listen(port, "0.0.0.0", () => {
-    log(`Server running on http://0.0.0.0:${port}`);
+  const port = parseInt(process.env.PORT || "2000", 10);
+  app.listen(port, "127.0.0.1", () => {
+    log(`Server running on http://127.0.0.1:${port}`);
   });
 })();
 
