@@ -7,8 +7,9 @@ export default defineConfig({
     host: "127.0.0.1",
     port: 5173,
     proxy: {
-      "/api": "http://127.0.0.1:3000",
-      "/admin": "http://127.0.0.1:3000"
+      "/api": "http://0.0.0.0:5000",
+      "/admin": "http://0.0.0.0:5000",
+      "/projects": "http://0.0.0.0:5000"
     }
   }
 });

@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { FaChartBar, FaProjectDiagram, FaPlusCircle, FaCog, FaUser } from "react-icons/fa";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import "./dashboard.css";
+import { AdminLayout } from "@/components/admin/admin-layout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Building2, Users, MessageSquare, Edit, Trash2 } from "lucide-react";
+
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 type Project = {
@@ -30,52 +33,7 @@ type Stats = {
   users: User[];
 };
 
-const API = "http://0.0.0.0:5000";
-
-function Sidebar({ open, setOpen }: { open: boolean; setOpen: (v: boolean) => void }) {
-  const [location] = useLocation();
-  return (
-    <aside className={`dashboard-sidebar${open ? " open" : ""}`}>
-      <button className="sidebar-toggle" onClick={() => setOpen(!open)}>
-        ☰
-      </button>
-      <ul>
-        <li className={location === "/admin/dashboard" ? "active" : ""}>
-          <Link href="/admin/dashboard">
-            <FaChartBar style={{ marginRight: 8 }} />
-            Dashboard
-          </Link>
-        </li>
-        <li className={location === "/admin/projects-realised" ? "active" : ""}>
-          <Link href="/admin/projects-realised">
-            <FaProjectDiagram style={{ marginRight: 8 }} />
-            Projets réalisés
-          </Link>
-        </li>
-        <li className={location === "/admin/project-form" ? "active" : ""}>
-          <Link href="/admin/project-form">
-            <FaPlusCircle style={{ marginRight: 8 }} />
-            Ajouter un projet
-          </Link>
-        </li>
-        <li className={location === "/admin/site-management" ? "active" : ""}>
-          <Link href="/admin/site-management">
-            <FaCog style={{ marginRight: 8 }} />
-            Gestion du site
-          </Link>
-        </li>
-        <li className={location === "/admin/project-edit" ? "active" : ""}>
-          <Link href="/admin/project-edit">
-            <FaProjectDiagram style={{ marginRight: 8 }} />
-            Éditer un projet
-          </Link>
-        </li>
-      </ul>
-    </aside>
-  );
-}
-
-function DashboardMain() {
+export default function Dashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -83,16 +41,17 @@ function DashboardMain() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${API}/api/admin/stats`)
-      .then(async res => {
-        if (!res.ok) {
-          const text = await res.text();
-          throw new Error(`Erreur stats: ${res.status}\n${text}`);
-        }
-        return res.json();
-      })
-      .then(statsData => {
-        setStats(statsData);
+    Promise.all([
+      fetch("/projects").then(res => res.json()),
+      fetch("/admin/stats").then(res => res.json()).catch(() => ({ totalUsers: 0, totalMessages: 0 }))
+    ])
+      .then(([projects, adminStats]) => {
+        setStats({
+          totalProjects: projects.length,
+          totalUsers: adminStats.totalUsers || 0,
+          projects: projects,
+          users: []
+        });
         setLoading(false);
       })
       .catch((err) => {
@@ -104,18 +63,20 @@ function DashboardMain() {
   const sectors = stats?.projects
     ? Array.from(new Set(stats.projects.map(p => p.sector).filter(Boolean)))
     : [];
+  
   const projectsBySector = sectors.length && stats?.projects
     ? sectors.map(sector =>
         stats.projects.filter(p => p.sector === sector).length
       )
     : [];
+  
   const sectorChartData = {
     labels: sectors,
     datasets: [
       {
         data: projectsBySector,
         backgroundColor: [
-          "#1976d2", "#43a047", "#ffa726", "#d32f2f", "#7e57c2", "#00897b"
+          "#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4"
         ],
         borderWidth: 2,
         borderColor: "#fff"
@@ -123,122 +84,205 @@ function DashboardMain() {
     ],
   };
 
-  // Handler placeholders (à remplacer par ta logique réelle)
   const handleEdit = (projectId: number) => {
+    sessionStorage.setItem("edit_project_id", projectId.toString());
     navigate(`/admin/project-edit/${projectId}`);
   };
-  const handleDelete = (projectId: number) => {
-    if (window.confirm("Supprimer ce projet ?")) {
-      alert(`Supprimer projet ID: ${projectId}`);
-      // Ajoute ici la logique de suppression réelle
+  
+  const handleDelete = async (projectId: number) => {
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce projet ?")) return;
+    
+    try {
+      const response = await fetch(`/projects/${projectId}`, {
+        method: 'DELETE',
+      });
+      
+      if (response.ok) {
+        // Recharger les données
+        setStats(prev => prev ? {
+          ...prev,
+          projects: prev.projects.filter(p => p.id !== projectId),
+          totalProjects: prev.totalProjects - 1
+        } : null);
+      } else {
+        alert("Erreur lors de la suppression du projet");
+      }
+    } catch (error) {
+      alert("Erreur de réseau lors de la suppression");
     }
   };
 
-  return (
-    <div className="dashboard-responsive-container">
-      {error && (
-        <div className="dashboard-error">
-          {error}
+  if (loading) {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-gray-500">Chargement...</div>
         </div>
-      )}
-      <div className="dashboard-cards-row">
-        <div className="dashboard-card">
-          <div className="dashboard-card-icon"><FaProjectDiagram color="#1976d2" size={28} /></div>
-          <div className="dashboard-card-title">Projets</div>
-          <div className="dashboard-card-value">{stats?.totalProjects ?? "0"}</div>
-        </div>
-        <div className="dashboard-card">
-          <div className="dashboard-card-icon"><FaUser color="#43a047" size={28} /></div>
-          <div className="dashboard-card-title">Utilisateurs</div>
-          <div className="dashboard-card-value">{stats?.totalUsers ?? "0"}</div>
-        </div>
-        <div className="dashboard-card">
-          <div className="dashboard-card-icon"><FaChartBar color="#ffa726" size={28} /></div>
-          <div className="dashboard-card-title">Secteurs</div>
-          <div className="dashboard-card-value">{sectors.length}</div>
-        </div>
-      </div>
-      <div className="dashboard-graphs-row">
-        <div className="dashboard-graph-card">
-          <h3>Répartition des projets par secteur</h3>
-          {projectsBySector.length > 0 ? (
-            <Pie data={sectorChartData} options={{
-              plugins: { legend: { position: "bottom" } }
-            }} />
-          ) : (
-            <div>Aucune donnée secteur</div>
-          )}
-        </div>
-        <div className="dashboard-list-card">
-          <h3>Utilisateurs</h3>
-          <ul>
-            {stats?.users?.length
-              ? stats.users.map((u) => (
-                  <li key={u.id}>
-                    <strong>{u.username}</strong> — <span className="dashboard-card-value">{u.email}</span> — <span style={{color:"#d32f2f"}}>{u.role}</span>
-                  </li>
-                ))
-              : <li>Aucun utilisateur</li>
-            }
-          </ul>
-        </div>
-        <div className="dashboard-list-card">
-          <h3>Projets</h3>
-          <ul>
-            {stats?.projects?.length
-              ? stats.projects.map((p) => (
-                  <li key={p.id} className="dashboard-project-item">
-                    <span>
-                      <strong>{p.project_name}</strong> — <span className="dashboard-card-value">{p.sector}</span> — <span style={{color:"#43a047"}}>{p.status}</span>
-                    </span>
-                    <span className="dashboard-project-actions">
-                      <button
-                        className="dashboard-edit-btn"
-                        onClick={() => handleEdit(p.id)}
-                      >
-                        Éditer
-                      </button>
-                      <button
-                        className="dashboard-delete-btn"
-                        onClick={() => handleDelete(p.id)}
-                      >
-                        Supprimer
-                      </button>
-                    </span>
-                  </li>
-                ))
-              : <li>Aucun projet</li>
-            }
-          </ul>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default function Dashboard() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    sessionStorage.removeItem("token");
-    window.location.href = "/";
-  };
+      </AdminLayout>
+    );
+  }
 
   return (
-    <div className="dashboard-layout">
-      <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-      <div className="dashboard-content">
-        <button className="sidebar-toggle floating" onClick={() => setSidebarOpen(!sidebarOpen)}>
-          ☰
-        </button>
-        <div className="dashboard-header">
-          <button className="dashboard-logout-btn" onClick={handleLogout}>
-            Déconnexion
-          </button>
+    <AdminLayout>
+      <div className="space-y-6">
+        {/* Header */}
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-gray-600">Vue d'ensemble de votre plateforme</p>
         </div>
-        <DashboardMain />
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+            {error}
+          </div>
+        )}
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Projets</CardTitle>
+              <Building2 className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats?.totalProjects ?? "0"}</div>
+              <p className="text-xs text-muted-foreground">
+                Répartis sur {sectors.length} secteurs
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Utilisateurs</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats?.totalUsers ?? "0"}</div>
+              <p className="text-xs text-muted-foreground">
+                Utilisateurs enregistrés
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Messages</CardTitle>
+              <MessageSquare className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">0</div>
+              <p className="text-xs text-muted-foreground">
+                Messages reçus
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Chart */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Répartition des projets par secteur</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {projectsBySector.length > 0 ? (
+                <div className="h-[300px] flex items-center justify-center">
+                  <Pie 
+                    data={sectorChartData} 
+                    options={{
+                      plugins: { 
+                        legend: { position: "bottom" },
+                        responsive: true,
+                        maintainAspectRatio: false
+                      }
+                    }} 
+                  />
+                </div>
+              ) : (
+                <div className="h-[300px] flex items-center justify-center text-gray-500">
+                  Aucune donnée disponible
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Projects List */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Projets récents</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {stats?.projects?.length ? (
+                  stats.projects.slice(0, 5).map((project) => (
+                    <div key={project.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex-1">
+                        <h4 className="font-medium text-gray-900">{project.project_name}</h4>
+                        <p className="text-sm text-gray-500">{project.sector} • {project.status}</p>
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleEdit(project.id)}
+                          data-testid={`button-edit-${project.id}`}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleDelete(project.id)}
+                          className="text-red-600 hover:text-red-700"
+                          data-testid={`button-delete-${project.id}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center text-gray-500 py-8">
+                    Aucun projet trouvé
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Quick Actions */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Actions rapides</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <Link href="/admin/project-form">
+                <Button className="w-full" data-testid="button-add-project">
+                  Ajouter un projet
+                </Button>
+              </Link>
+              <Link href="/admin/projects">
+                <Button variant="outline" className="w-full" data-testid="button-view-projects">
+                  Voir tous les projets
+                </Button>
+              </Link>
+              <Link href="/admin/site-management">
+                <Button variant="outline" className="w-full" data-testid="button-site-management">
+                  Gérer le site
+                </Button>
+              </Link>
+              <Link href="/admin/stats">
+                <Button variant="outline" className="w-full" data-testid="button-detailed-stats">
+                  Statistiques détaillées
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-    </div>
+    </AdminLayout>
   );
 }

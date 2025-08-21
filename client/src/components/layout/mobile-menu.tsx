@@ -12,9 +12,11 @@ interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
   navigationItems: NavigationItem[];
+  isAuthenticated: boolean;
+  handleLogout: () => void;
 }
 
-export function MobileMenu({ isOpen, onClose, navigationItems }: MobileMenuProps) {
+export function MobileMenu({ isOpen, onClose, navigationItems, isAuthenticated, handleLogout }: MobileMenuProps) {
   if (!isOpen) return null;
 
   return (
@@ -44,17 +46,32 @@ export function MobileMenu({ isOpen, onClose, navigationItems }: MobileMenuProps
         {/* Authentication Section */}
         <div className="border-t border-gray-200 mt-4 pt-4">
           <div className="px-3">
-            <Link href="/login">
+            {isAuthenticated ? (
               <Button 
                 variant="outline"
                 size="sm"
-                className="w-full flex items-center justify-center gap-2"
-                onClick={onClose}
+                className="w-full flex items-center justify-center gap-2 text-red-600 hover:text-red-800"
+                onClick={() => {
+                  handleLogout();
+                  onClose();
+                }}
               >
                 <User size={16} />
-                Se connecter
+                Déconnexion
               </Button>
-            </Link>
+            ) : (
+              <Link href="/login">
+                <Button 
+                  variant="outline"
+                  size="sm"
+                  className="w-full flex items-center justify-center gap-2"
+                  onClick={onClose}
+                >
+                  <User size={16} />
+                  Se connecter
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </div>

@@ -6,6 +6,7 @@ import { insertContactMessageSchema } from "@shared/schema";
 import { z } from "zod";
 import { requireAdminAuth } from "./middlewares/auth.middleware";
 import adminRoutes from "./routes/admin.routes";
+import projectRoutes from "./routes/project.routes";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
@@ -58,8 +59,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete contact message (protected route - requires authentication)
+  app.delete("/api/contact-messages/:id", isAuthenticated, async (req, res) => {
+    try {
+      await storage.deleteContactMessage(req.params.id);
+      res.json({ success: true, message: "Message supprimé avec succès" });
+    } catch (error) {
+      res.status(500).json({ 
+        success: false, 
+        message: "Erreur lors de la suppression du message" 
+      });
+    }
+  });
+
+  // Projects routes
+  app.use("/api/projects", projectRoutes);
+
   // Admin routes
   app.use("/admin", requireAdminAuth, adminRoutes);
+  app.use("/api/admin", requireAdminAuth, adminRoutes);
 
   const httpServer = createServer(app);
   return httpServer;

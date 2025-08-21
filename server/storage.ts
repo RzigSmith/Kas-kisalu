@@ -18,6 +18,7 @@ export interface IStorage {
   // Other operations
   createContactMessage(message: InsertContactMessage): Promise<ContactMessage>;
   getContactMessages(): Promise<ContactMessage[]>;
+  deleteContactMessage(id: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -57,6 +58,10 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(contactMessages)
       .orderBy(contactMessages.createdAt);
+  }
+
+  async deleteContactMessage(id: string): Promise<void> {
+    await db.delete(contactMessages).where(eq(contactMessages.id, id));
   }
 }
 

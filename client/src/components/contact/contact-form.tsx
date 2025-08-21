@@ -50,6 +50,33 @@ export function ContactForm() {
 
   const contactMutation = useMutation({
     mutationFn: async (data: ContactFormValues) => {
+      // 1. Envoyer à la base de données
+      const dbData = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        sector: data.sector,
+        message: data.message
+      };
+      
+      try {
+        const dbResponse = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dbData),
+        });
+        
+        if (!dbResponse.ok) {
+          throw new Error('Erreur lors de l\'enregistrement en base');
+        }
+      } catch (dbError) {
+        console.error('Erreur base de données:', dbError);
+        // Continue avec EmailJS même si la DB échoue
+      }
+      
+      // 2. Envoyer via EmailJS
       const templateParams = {
         firstName: data.firstName,
         lastName: data.lastName,
@@ -57,6 +84,7 @@ export function ContactForm() {
         sector: data.sector,
         message: data.message,
       };
+      
       try {
         const result = await emailjs.send(
           "service_v7rks3v", // Service ID

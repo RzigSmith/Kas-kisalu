@@ -22,7 +22,7 @@ export default function Agriculture() {
   useEffect(() => {
     async function fetchProjects() {
       try {
-        const res = await fetch("http://0.0.0.0:5000/projects");
+        const res = await fetch("/projects");
         if (!res.ok) throw new Error("Erreur serveur");
         const data = await res.json();
         const filtered = data.filter((p: any) => p.sector === "Agriculture");
@@ -197,7 +197,7 @@ export default function Agriculture() {
                           style={{
                        backgroundImage: `url(${
                               project.project_images[0].startsWith("/uploads/")
-                                ? `http://0.0.0.0:5000${project.project_images[0].replace(/\\/g, "/")}`
+                                ? project.project_images[0].replace(/\\/g, "/")
                                 : project.project_images[0]
                             })`,
                           }}
