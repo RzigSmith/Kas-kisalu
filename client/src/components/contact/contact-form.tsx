@@ -182,6 +182,8 @@ export function ContactForm() {
                     <SelectItem value="agriculture">Agriculture</SelectItem>
                     <SelectItem value="elevage">Élevage</SelectItem>
                     <SelectItem value="transport">Transport</SelectItem>
+                    <SelectItem value="immobilier">Immobilier</SelectItem>
+                    <SelectItem value="vente-materiaux">Vente de matériaux</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
